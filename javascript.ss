@@ -1001,7 +1001,7 @@
        ;; primitive application
        [(,pr ,[e*] ...)
         `(lambda (k)
-           (lambda () (k (,pr (trampoline (,e* (lambda (returnx) returnx))) ...))))]
+           (lambda () (k (,pr (,e* (lambda (returnx) returnx)) ...))))]
        ;; lambda application
        [(,[e] ,[e*] ...)
         `(lambda (k)
