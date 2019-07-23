@@ -1,5 +1,6 @@
 function trampoline(thunk) {
     while (thunk && typeof thunk === "function") {
+//        console.log('boing');
         thunk = thunk();
     }
     return thunk

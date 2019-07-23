@@ -1001,11 +1001,11 @@
        ;; primitive application
        [(,pr ,[e*] ...)
         `(lambda (k)
-           (k (,pr (trampoline (,e* (lambda (returnx) returnx))) ...)))]
+           (k (,pr (,e* (lambda (returnx) returnx)) ...)))]
        ;; lambda application
        [(,[e] ,[e*] ...)
         `(lambda (k)
-           (lambda () ((,e (lambda (returnx) returnx)) k ,e* ...)))]
+           ((,e (lambda (returnx) returnx)) k ,e* ...))]
        [(quote ,d) `(lambda (k) (k ,d))]))
 
 ;; the definition of our compiler that pulls in all of our passes and runs
@@ -1060,8 +1060,12 @@
 ;;      ((lambda (x) (- x '1)) (+ abc (* def '100)))))
 
 (define program
-  '(letrec ((fact (lambda (n) (if (eq? n '0) '1 (times n (fact (add n '-1)))))))
-     (fact '15170)))
+  '(letrec ((fact (lambda (n total)
+                    (if (eq? n '0)
+                        total
+                        (fact (add n '-1) (times total n))))))
+
+     (fact '100000 '1)))
 
 ;; (define program
 ;;   '(letrec ((fib (lambda (n)
@@ -1075,7 +1079,7 @@
 ;;   '(if '1 '42 '0))
 
 (define (trampoline thunk)
-;;  (pk 'trampoline thunk)
+  ;;  (pk 'trampoline thunk)
   (if (procedure? thunk)
       (trampoline (thunk))
       thunk))
@@ -1162,6 +1166,7 @@
 (pk "javascript output:")
 (display (emit compiled))
 (newline)
+(pk 'javascript 'emitted)
 (define out (pk (eval compiled)))
 
 
