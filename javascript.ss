@@ -100,7 +100,8 @@
 
 (define (pk . args)
   (display ";;; " (current-error-port))
-  (display args (current-error-port))(newline (current-error-port))
+  (pretty-print args (current-error-port))
+  (newline (current-error-port))
   (car (reverse args)))
 
   ;;; Representation of our data types.
@@ -234,7 +235,7 @@
 
   ;;; user value primitives that perform allocation
   (define user-alloc-value-prims
-    '((times . 2) (add . 2) (cons . 2) (make-vector . 1) (box . 1)))
+    '((pk . 1) (call/cc . 1) (times . 2) (add . 2) (cons . 2) (make-vector . 1) (box . 1)))
 
   ;;; user value primitives that do not perform allocation
   (define user-non-alloc-value-prims
@@ -1009,6 +1010,13 @@
                     (lambda ()
                       (,e1 (lambda (v2)
                              (k (,pr v1 v2)))))))))]
+
+       ;; dirty call/cc
+       [(,pr ,[e])
+        ;; (define call/cc (lambda (k f) (f k k)))
+        `(lambda (cc)
+           (lambda () (,e (lambda (v) (v cc cc)))))]
+
        ;; primitive application
        [(,pr ,[e*] ...)
         `(lambda (k)
@@ -1071,13 +1079,13 @@
 ;;          (def '101))
 ;;      ((lambda (x) (- x '1)) (+ abc (* def '100)))))
 
-(define program
-  '(letrec ((fact (lambda (n total)
-                    (if (eq? n '0)
-                        total
-                        (fact (add n '-1) (times total n))))))
+;; (define program
+;;   '(letrec ((fact (lambda (n total)
+;;                     (if (eq? n '0)
+;;                         total
+;;                         (fact (add n '-1) (times total n))))))
 
-     (fact '20000 '1)))
+;;      (fact '20000 '1)))
 
 ;; (define program
 ;;   '(letrec ((fib (lambda (n)
@@ -1089,6 +1097,15 @@
 
 ;; (define program
 ;;   '(if '1 '42 '0))
+
+(define program
+  ;; call/cc
+  '(call/cc
+    (lambda (cont) (cont '42))))
+
+;; (define program
+;;   '(let ((proc (lambda (a b c) (add a (add b c)))))
+;;      (proc '4 '5 (proc '1 '2 '3))))
 
 (define (trampoline thunk)
   ;;  (pk 'trampoline thunk)
