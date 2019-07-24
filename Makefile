@@ -13,3 +13,8 @@ init: gcc submodules ## Initialize the repository and spawn a shell with the cor
 
 check: gcc submodules # run the tests
 	./env.sh scheme --script run-tests.ss
+
+run: javascript.ss  ## compile scheme to javascript
+	./env.sh scheme --script javascript.ss > program.js
+	cat prelude.js program.js postlude.js > out.js
+	node out.js
