@@ -1,11 +1,12 @@
-function pk(x, y, z, t) {
-    console.log("pk", x, y, z, t);
+function pk(x, y) {
+    console.log("pk", x, y);
+    return x;
 }
 
 function trampoline(thunk) {
-    console.log('trampoline start', thunk)
+    // console.log('trampoline start', thunk)
     while (thunk && typeof thunk === "function") {
-        console.log('boing', thunk);
+        // console.log('boing', thunk);
         thunk = thunk();
     }
     return thunk
@@ -19,12 +20,16 @@ function times(a, b) {
     return a * b;
 }
 
+function quote(x) { return x };
+
+function voidf(k) { return k(undefined); };
+
 let program =
-(function( cc ) { return  (function(  ) { return  (function( k ) { return  k ( (function( kk, cont_0 ) { return  (function(  ) { return  (function( k ) { return  (function(  ) { return  cont_0 ( (function( returnx ) { return  returnx ;}) ) ( k, (function( k ) { return  k ( 42 ) ;}) ) ;}) ;}) ( kk ) ;}) ;}) ) ;}) ( (function( v ) { return  v ( cc, cc ) ;}) ) ;}) ;})
+(function( kxx ) {  return (function(  ) {  return (function( k ) {  return k ( (function( kk, fact_0 ) {  return (function(  ) {  return (function( kxx ) {  return (function(  ) {  return (function( k ) {  return k ( (function( kk, t_3 ) {  return (function(  ) {  return (function( kxx ) {  return (function(  ) {  return fact_0 ( (function( v ) {  return (function(  ) {  return (function( k ) {  return k ( 20000 ) ;}) ( (function( v0 ) {  return (function(  ) {  return (function( k ) {  return k ( 1 ) ;}) ( (function( v1 ) {  return (function(  ) {  return v ( kxx, (function( kv ) {  return kv ( v0 ) ;}), (function( kv ) {  return kv ( v1 ) ;}) ) ;}) ;}) ) ;}) ;}) ) ;}) ;}) ) ;}) ;}) ( kk ) ;}) ;}) ) ;}) ( (function( v ) {  return (function(  ) {  return (function( k ) {  return (function(  ) {  fact_0 = (function( k ) {  return k ( (function( kk, n_1, total_2 ) {  return (function(  ) {  return (function( k ) {  return (function( kpr ) {  return (function(  ) {  return n_1 ( (function( v0 ) {  return (function(  ) {  return (function( k ) {  return k ( 0 ) ;}) ( (function( v1 ) {  return kpr ( v0 === v1 ) ;}) ) ;}) ;}) ) ;}) ;}) ( (function( kif ) {  return /* if */ kif ? (function(  ) {  return total_2 ( k ) ;}) : (function(  ) {  return (function( kxx ) {  return (function(  ) {  return fact_0 ( (function( v ) {  return (function(  ) {  return (function( kpr ) {  return (function(  ) {  return n_1 ( (function( v0 ) {  return (function(  ) {  return (function( k ) {  return k ( -1 ) ;}) ( (function( v1 ) {  return kpr ( add ( v0, v1 ) ) ;}) ) ;}) ;}) ) ;}) ;}) ( (function( v0 ) {  return (function(  ) {  return (function( kpr ) {  return (function(  ) {  return total_2 ( (function( v0 ) {  return (function(  ) {  return n_1 ( (function( v1 ) {  return kpr ( times ( v0, v1 ) ) ;}) ) ;}) ;}) ) ;}) ;}) ( (function( v1 ) {  return (function(  ) {  return v ( kxx, (function( kv ) {  return kv ( v0 ) ;}), (function( kv ) {  return kv ( v1 ) ;}) ) ;}) ;}) ) ;}) ;}) ) ;}) ;}) ) ;}) ;}) ( k ) ;}) ;}) ) ;}) ( kk ) ;}) ;}) ) ;}); return k ( voidf ) ;}) ;}) ( (function( v0 ) {  return (function(  ) {  return v ( kxx, (function( kv ) {  return kv ( v0 ) ;}) ) ;}) ;}) ) ;}) ;}) ) ;}) ;}) ( kk ) ;}) ;}) ) ;}) ( (function( v ) {  return (function(  ) {  return voidf ( (function( v0 ) {  return (function(  ) {  return v ( kxx, (function( kv ) {  return kv ( v0 ) ;}) ) ;}) ;}) ) ;}) ;}) ) ;}) ;})
 ;
 
-function output(x, y, z, t) {
-    pk('output', x, y, z, t);
+function output(x) {
+    pk('output', x);
     return function() {};
 }
 

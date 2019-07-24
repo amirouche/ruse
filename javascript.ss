@@ -987,6 +987,12 @@
  cps-trampoline : L6 (e) -> L6 ()
  (Expr : Expr (e) -> Expr ()
 
+       [(set! ,x ,[e])
+        `(lambda (k)
+           (lambda ()
+             (set! ,x ,e)
+             (k (void))))]
+
        ;; if branch
        [(if ,[e0] ,[e1] ,[e2])
         `(lambda (k)
@@ -994,7 +1000,7 @@
             (lambda (kif)
               (if kif
                   (lambda () (,e1 k))
-                  (lambda () (,e2 k))))))]
+                    (lambda () (,e2 k))))))]
 
        ;; lambda creation
        [(lambda (,x* ...) ,[body])
@@ -1002,30 +1008,55 @@
            (k (lambda (kk ,x* ...)
                 (lambda () (,body kk)))))]
 
+       ;; ;; dirty call/cc
+       ;; [(,pr ,[e])
+       ;;  (if (eq? pr 'call/cc)
+       ;;      ;; (define call/cc (lambda (k f) (f k k)))
+       ;;      `(lambda (cc)
+       ;;         (lambda () (,e (lambda (v) (v cc cc)))))
+       ;;      `(lambda (k) (lambda () (k (,pr ,e)))))]
+
        ;; primitive application
        [(,pr ,[e0] ,[e1])
-        `(lambda (k)
+        `(lambda (kpr)
            (lambda ()
-             (,e0 (lambda (v1)
+             (,e0 (lambda (v0)
                     (lambda ()
-                      (,e1 (lambda (v2)
-                             (k (,pr v1 v2)))))))))]
+                      (,e1 (lambda (v1)
+                             (kpr (,pr v0 v1)))))))))]
 
-       ;; dirty call/cc
-       [(,pr ,[e])
-        ;; (define call/cc (lambda (k f) (f k k)))
-        `(lambda (cc)
-           (lambda () (,e (lambda (v) (v cc cc)))))]
-
-       ;; primitive application
-       [(,pr ,[e*] ...)
-        `(lambda (k)
-           (lambda () (k (,pr (,e* (lambda (returnx) returnx)) ...))))]
+       [(,pr ,[e0])
+        `(lambda (kpr)
+           (lambda ()
+             (,e0 (lambda (v0)
+                    (lambda()
+                      (kpr (,pr v0)))))))]
 
        ;; lambda application
-       [(,[e] ,[e*] ...)
-        `(lambda (k)
-           (lambda () ((,e (lambda (returnx) returnx)) k ,e* ...)))]
+       [(,[e] ,[e0])
+        `(lambda (kxx)
+           (lambda ()
+             (,e (lambda (v)
+                   (lambda ()
+                     (,e0 (lambda (v0)
+                            (lambda ()
+                              (v kxx
+                                 (lambda (kv) (kv v0)))))))))))]
+
+              ;; lambda application
+       [(,[e] ,[e0] ,[e1])
+        `(lambda (kxx)
+           (lambda ()
+             (,e (lambda (v)
+                   (lambda ()
+                     (,e0 (lambda (v0)
+                            (lambda ()
+                              (,e1 (lambda (v1)
+                                     (lambda ()
+                                       (v kxx
+                                          (lambda (kv) (kv v0))
+                                          (lambda (kv) (kv v1))))))))))))))]
+
        [(quote ,d) `(lambda (k) (k ,d))]))
 
 ;; the definition of our compiler that pulls in all of our passes and runs
@@ -1041,30 +1072,6 @@
   (cps-trampoline unparse-L6)
   unparse-L6)
 
-;; (define program
-;;   '(add '1 '2))
-
-;; (define program
-;;   '(let ((square (lambda (value) (times value value))))
-;;      (square '1337)))
-
-;; (define program
-;;   `((lambda (XXX YYY)
-;;       (add XXX YYY))
-;;     '100 '200))
-
-;; (define program
-;;   `(add '10 (times '20 '2)))
-
-;; (define program `(letrec ((abc '42))
-;;                    abc))
-
-;; (define program
-;;    '(letrec ((input '42)
-;;              (odd? (lambda (x) (if (eq? x '0) '#f (even? (+ x '-1)))))
-;;              (even? (lambda (x) (if (eq? x '0) '#t (odd? (+ x '-1))))))
-;;       (odd? input)))
-
 
 (define add (lambda (a b)
               ;; (pk 'add a b)
@@ -1075,17 +1082,50 @@
                 (* a b)))
 
 ;; (define program
-;;   '(let ((abc '42)
-;;          (def '101))
-;;      ((lambda (x) (- x '1)) (+ abc (* def '100)))))
+;;   '(add '1 '2))
 
 ;; (define program
-;;   '(letrec ((fact (lambda (n total)
-;;                     (if (eq? n '0)
-;;                         total
-;;                         (fact (add n '-1) (times total n))))))
+;;   `(add '10 (times '20 '2)))
 
-;;      (fact '20000 '1)))
+;; (define program
+;;   '(let ((square (lambda (value) (times value value))))
+;;      (pk '13)
+;;      (square '1337)))
+
+;; (define program
+;;   `((lambda (XXX YYY)
+;;       (add XXX YYY))
+;;     '100 '200))
+
+;; (define program '(let ((abc '0)) (set! abc '42)))
+
+;; (define program `(letrec ((abc '42))
+;;                    abc))
+
+;; (define program
+;;    '(letrec ((abc '42)
+;;              (def '5)
+;;              (ghi '3))
+;;       (add abc def) ))
+
+;; (define program
+;;   '(let ((input '42))
+;;      (letrec ((odd? (lambda (x) (if (eq? x '0) '0 (even? (add x '-1)))))
+;;               (even? (lambda (x) (if (eq? x '0) '1 (odd? (add x '-1))))))
+;;        (odd? input))))
+
+
+;; (define program
+;;   '(let ((abc '42)
+;;          (def '101))
+;;      ((lambda (x) (add x '-1)) (add abc (times def '100)))))
+
+(define program
+  '(letrec ((fact (lambda (n total)
+                    (if (eq? n '0)
+                        total
+                        (fact (add n '-1) (times total n))))))
+     (fact '20000 '1)))
 
 ;; (define program
 ;;   '(letrec ((fib (lambda (n)
@@ -1098,10 +1138,10 @@
 ;; (define program
 ;;   '(if '1 '42 '0))
 
-(define program
-  ;; call/cc
-  '(call/cc
-    (lambda (cont) (cont '42))))
+;; (define program
+;;   ;; call/cc
+;;   '(call/cc
+;;     (lambda (cont) (cont '42))))
 
 ;; (define program
 ;;   '(let ((proc (lambda (a b c) (add a (add b c)))))
@@ -1150,7 +1190,7 @@
 
     ;; (void)
     [(and (pair? x) (eq? (car x) 'void))
-     "undefined"]
+     "voidf"]
 
     ;; (eq? a b)
     [(and (pair? x) (eq? (car x) 'eq?))
@@ -1171,15 +1211,25 @@
                     (emit (cadddr x))
                     ""))
       "")]
+
     ;; function definition
     [(and (pair? x) (eq? (car x) 'lambda))
      (string-join
       (append (list "(function("
                     (emit-args (cadr x))
-                    ") { return ")
-              (map emit (cddr x))
+                    ") { ")
+              (let loop ((body (cddr x))
+                         (out '()))
+                (cond
+                 ((and (pair? body) (pair? (cdr body)))
+                  (loop (cdr body) (cons (string-append (emit (car body)) ";") out)))
+                 ((pair? body)
+                  (loop (cdr body) (cons (string-append "return " (emit (car body))) out)))
+                 (else (reverse out))))
+
               (list ";})"))
       " ")]
+
     ;; function call
     [(pair? x)
      (string-join (list (emit (car x))
@@ -1187,6 +1237,7 @@
                         (string-join (map emit (cdr x)) ", ")
                         ")")
                   " ")]
+
     [else
      (display x)(newline)
      (error 'emit "got ~a" x)]))
