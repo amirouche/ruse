@@ -985,6 +985,7 @@
 (define-pass
  cps-trampoline : L6 (e) -> L6 ()
  (Expr : Expr (e) -> Expr ()
+
        ;; if branch
        [(if ,[e0] ,[e1] ,[e2])
         `(lambda (k)
@@ -993,15 +994,26 @@
               (if kif
                   (lambda () (,e1 k))
                   (lambda () (,e2 k))))))]
+
        ;; lambda creation
        [(lambda (,x* ...) ,[body])
         `(lambda (k)
            (k (lambda (kk ,x* ...)
                 (lambda () (,body kk)))))]
+
+       ;; primitive application
+       [(,pr ,[e0] ,[e1])
+        `(lambda (k)
+           (lambda ()
+             (,e0 (lambda (v1)
+                    (lambda ()
+                      (,e1 (lambda (v2)
+                             (k (,pr v1 v2)))))))))]
        ;; primitive application
        [(,pr ,[e*] ...)
         `(lambda (k)
            (lambda () (k (,pr (,e* (lambda (returnx) returnx)) ...))))]
+
        ;; lambda application
        [(,[e] ,[e*] ...)
         `(lambda (k)
@@ -1065,7 +1077,7 @@
                         total
                         (fact (add n '-1) (times total n))))))
 
-     (fact '10000 '1)))
+     (fact '20000 '1)))
 
 ;; (define program
 ;;   '(letrec ((fib (lambda (n)
