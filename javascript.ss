@@ -235,7 +235,7 @@
 
   ;;; user value primitives that perform allocation
   (define user-alloc-value-prims
-    '((pk . 1) (call/cc . 1) (times . 2) (add . 2) (cons . 2) (make-vector . 1) (box . 1)))
+    '((call/cc . 1) (pk . 1) (call/cc . 1) (times . 2) (add . 2) (cons . 2) (make-vector . 1) (box . 1)))
 
   ;;; user value primitives that do not perform allocation
   (define user-non-alloc-value-prims
@@ -1008,14 +1008,6 @@
            (k (lambda (kk ,x* ...)
                 (lambda () (,body kk)))))]
 
-       ;; ;; dirty call/cc
-       ;; [(,pr ,[e])
-       ;;  (if (eq? pr 'call/cc)
-       ;;      ;; (define call/cc (lambda (k f) (f k k)))
-       ;;      `(lambda (cc)
-       ;;         (lambda () (,e (lambda (v) (v cc cc)))))
-       ;;      `(lambda (k) (lambda () (k (,pr ,e)))))]
-
        ;; primitive application
        [(,pr ,[e0] ,[e1])
         `(lambda (kpr)
@@ -1026,11 +1018,16 @@
                              (kpr (,pr v0 v1)))))))))]
 
        [(,pr ,[e0])
-        `(lambda (kpr)
-           (lambda ()
-             (,e0 (lambda (v0)
-                    (lambda()
-                      (kpr (,pr v0)))))))]
+        (if (eq? pr 'call/cc)
+            `(lambda (k)
+               (,e0
+                (lambda (proc)
+                  (proc k (lambda (v) (v (lambda (a b c) (b k))))))))
+            `(lambda (kpr)
+               (lambda ()
+                 (,e0 (lambda (v0)
+                        (lambda()
+                          (kpr (,pr v0))))))))]
 
        ;; lambda application
        [(,[e] ,[e0])
@@ -1043,7 +1040,7 @@
                               (v kxx
                                  (lambda (kv) (kv v0)))))))))))]
 
-              ;; lambda application
+       ;; lambda application
        [(,[e] ,[e0] ,[e1])
         `(lambda (kxx)
            (lambda ()
@@ -1120,12 +1117,12 @@
 ;;          (def '101))
 ;;      ((lambda (x) (add x '-1)) (add abc (times def '100)))))
 
-(define program
-  '(letrec ((fact (lambda (n total)
-                    (if (eq? n '0)
-                        total
-                        (fact (add n '-1) (times total n))))))
-     (fact '20000 '1)))
+;; (define program
+;;   '(letrec ((fact (lambda (n total)
+;;                     (if (eq? n '0)
+;;                         total
+;;                         (fact (add n '-1) (times total n))))))
+;;      (fact '20000 '1)))
 
 ;; (define program
 ;;   '(letrec ((fib (lambda (n)
@@ -1139,9 +1136,13 @@
 ;;   '(if '1 '42 '0))
 
 ;; (define program
-;;   ;; call/cc
 ;;   '(call/cc
-;;     (lambda (cont) (cont '42))))
+;;     (lambda (cont) (cont '42) '123)))
+
+
+(define program
+  '(add '42 (call/cc
+             (lambda (k) (k '666) (k '42) '666))))
 
 ;; (define program
 ;;   '(let ((proc (lambda (a b c) (add a (add b c)))))

@@ -24,3 +24,16 @@ function sum(n, total, k) {
 }
 
 trampoline(sum(10, 0, pk));
+
+function(v) {
+    return (function() {
+        return (function(k) {
+            return k(42) ;})
+        ((function(v0) {
+            return (function() {
+
+                return v(kxx, (function(kv) { return kv (v0);}));
+            });
+        }));
+    });
+}
