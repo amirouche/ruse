@@ -6,7 +6,7 @@ function pk(x, y) {
 function trampoline(thunk) {
     // console.log('trampoline start', thunk)
     while (thunk && typeof thunk === "function") {
-        console.log('boing');
+        // console.log('boing');
         thunk = thunk();
     }
     return thunk
@@ -24,6 +24,6 @@ function times(a, b) {
 
 function quote(x) { return x };
 
-function voidf(k) { console.log(k); return k(undefined); };
+function voidf(k) { return k(undefined); };
 
 let program =

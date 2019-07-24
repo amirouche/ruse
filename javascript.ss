@@ -1117,12 +1117,12 @@
 ;;          (def '101))
 ;;      ((lambda (x) (add x '-1)) (add abc (times def '100)))))
 
-;; (define program
-;;   '(letrec ((fact (lambda (n total)
-;;                     (if (eq? n '0)
-;;                         total
-;;                         (fact (add n '-1) (times total n))))))
-;;      (fact '20000 '1)))
+(define program
+  '(letrec ((fact (lambda (n total)
+                    (if (eq? n '0)
+                        total
+                        (fact (add n '-1) (times total n))))))
+     (fact '10 '1)))
 
 ;; (define program
 ;;   '(letrec ((fib (lambda (n)
@@ -1140,9 +1140,9 @@
 ;;     (lambda (cont) (cont '42) '123)))
 
 
-(define program
-  '(add '42 (call/cc
-             (lambda (k) (k '666) (k '42) '666))))
+;; (define program
+;;   '(add '42 (call/cc
+;;              (lambda (k) (k '666) (k '42) '666))))
 
 ;; (define program
 ;;   '(let ((proc (lambda (a b c) (add a (add b c)))))
