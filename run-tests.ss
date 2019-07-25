@@ -1,3 +1,0 @@
-(import (tests))
-
-(run-tests)
