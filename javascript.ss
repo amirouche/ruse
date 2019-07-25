@@ -1122,7 +1122,7 @@
                     (if (eq? n '0)
                         total
                         (fact (add n '-1) (times total n))))))
-     (fact '10 '1)))
+     (fact '1000000 '1)))
 
 ;; (define program
 ;;   '(letrec ((fib (lambda (n)
