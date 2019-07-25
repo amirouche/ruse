@@ -1069,92 +1069,7 @@
   (cps-trampoline unparse-L6)
   unparse-L6)
 
-
-(define add (lambda (a b)
-              ;; (pk 'add a b)
-              (+ a b)))
-
-(define times (lambda (a b)
-                ;; (pk 'times a b)
-                (* a b)))
-
-;; (define program
-;;   '(add '1 '2))
-
-;; (define program
-;;   `(add '10 (times '20 '2)))
-
-;; (define program
-;;   '(let ((square (lambda (value) (times value value))))
-;;      (pk '13)
-;;      (square '1337)))
-
-;; (define program
-;;   `((lambda (XXX YYY)
-;;       (add XXX YYY))
-;;     '100 '200))
-
-;; (define program '(let ((abc '0)) (set! abc '42)))
-
-;; (define program `(letrec ((abc '42))
-;;                    abc))
-
-;; (define program
-;;    '(letrec ((abc '42)
-;;              (def '5)
-;;              (ghi '3))
-;;       (add abc def) ))
-
-;; (define program
-;;   '(let ((input '42))
-;;      (letrec ((odd? (lambda (x) (if (eq? x '0) '0 (even? (add x '-1)))))
-;;               (even? (lambda (x) (if (eq? x '0) '1 (odd? (add x '-1))))))
-;;        (odd? input))))
-
-
-;; (define program
-;;   '(let ((abc '42)
-;;          (def '101))
-;;      ((lambda (x) (add x '-1)) (add abc (times def '100)))))
-
-(define program
-  '(letrec ((fact (lambda (n total)
-                    (if (eq? n '0)
-                        total
-                        (fact (add n '-1) (times total n))))))
-     (fact '1000000 '1)))
-
-;; (define program
-;;   '(letrec ((fib (lambda (n)
-;;                    (if (<= n '2)
-;;                        '1
-;;                        (+ (fib (- n '1)) (fib (- n '2)))))))
-;;      (fib '15)))
-
-
-;; (define program
-;;   '(if '1 '42 '0))
-
-;; (define program
-;;   '(call/cc
-;;     (lambda (cont) (cont '42) '123)))
-
-
-;; (define program
-;;   '(add '42 (call/cc
-;;              (lambda (k) (k '666) (k '42) '666))))
-
-;; (define program
-;;   '(let ((proc (lambda (a b c) (add a (add b c)))))
-;;      (proc '4 '5 (proc '1 '2 '3))))
-
-(define (trampoline thunk)
-  ;;  (pk 'trampoline thunk)
-  (if (procedure? thunk)
-      (trampoline (thunk))
-      thunk))
-
-(define compiled (my-tiny-compile program))
+;; emit javascript
 
 (define string-join
   (lambda (str* jstr)
@@ -1185,67 +1100,176 @@
 
 (define (emit x)
   (cond
-    [(number? x) (number->string x)]
-    [(string? x) x]
-    [(symbol? x) (symbol->c-id x)]
+   [(number? x) (number->string x)]
+   [(string? x) x]
+   [(symbol? x) (symbol->c-id x)]
 
-    ;; (void)
-    [(and (pair? x) (eq? (car x) 'void))
-     "voidf"]
+   ;; (void)
+   [(and (pair? x) (eq? (car x) 'void))
+    "voidf"]
 
-    ;; (eq? a b)
-    [(and (pair? x) (eq? (car x) 'eq?))
-     (string-append (emit (cadr x)) " === " (emit (caddr x)))]
+   ;; (eq? a b)
+   [(and (pair? x) (eq? (car x) 'eq?))
+    (string-append (emit (cadr x)) " === " (emit (caddr x)))]
 
-    ;; (set! x e)
-    [(and (pair? x) (eq? (car x) 'set!))
-     (string-append (emit (cadr x)) " = " (emit (caddr x)))]
+   ;; (set! x e)
+   [(and (pair? x) (eq? (car x) 'set!))
+    (string-append (emit (cadr x)) " = " (emit (caddr x)))]
 
-    ;; if
-    [(and (pair? x) (eq? (car x) 'if))
-     (string-join
-      (append (list "/* if */ "
-                    (emit (cadr x))
-                    " ? "
-                    (emit (caddr x))
-                    " : "
-                    (emit (cadddr x))
-                    ""))
-      "")]
+   ;; if
+   [(and (pair? x) (eq? (car x) 'if))
+    (string-join
+     (append (list "/* if */ "
+                   (emit (cadr x))
+                   " ? "
+                   (emit (caddr x))
+                   " : "
+                   (emit (cadddr x))
+                   ""))
+     "")]
 
-    ;; function definition
-    [(and (pair? x) (eq? (car x) 'lambda))
-     (string-join
-      (append (list "(function("
-                    (emit-args (cadr x))
-                    ") { ")
-              (let loop ((body (cddr x))
-                         (out '()))
-                (cond
-                 ((and (pair? body) (pair? (cdr body)))
-                  (loop (cdr body) (cons (string-append (emit (car body)) ";") out)))
-                 ((pair? body)
-                  (loop (cdr body) (cons (string-append "return " (emit (car body))) out)))
-                 (else (reverse out))))
+   ;; function definition
+   [(and (pair? x) (eq? (car x) 'lambda))
+    (string-join
+     (append (list "(function("
+                   (emit-args (cadr x))
+                   ") { ")
+             (let loop ((body (cddr x))
+                        (out '()))
+               (cond
+                ((and (pair? body) (pair? (cdr body)))
+                 (loop (cdr body) (cons (string-append (emit (car body)) ";") out)))
+                ((pair? body)
+                 (loop (cdr body) (cons (string-append "return " (emit (car body))) out)))
+                (else (reverse out))))
 
-              (list ";})"))
-      " ")]
+             (list ";})"))
+     " ")]
 
-    ;; function call
-    [(pair? x)
-     (string-join (list (emit (car x))
-                        "("
-                        (string-join (map emit (cdr x)) ", ")
-                        ")")
-                  " ")]
+   ;; function call
+   [(pair? x)
+    (string-join (list (emit (car x))
+                       "("
+                       (string-join (map emit (cdr x)) ", ")
+                       ")")
+                 " ")]
 
-    [else
-     (display x)(newline)
-     (error 'emit "got ~a" x)]))
+   [else
+    (display x)(newline)
+    (error 'emit "got ~a" x)]))
 
-(pk "compiled" compiled)
-(pk "javascript output:")
-(display (emit compiled))
-(newline)
+;; main
+
+(unless (= (length (command-line)) 3)
+  (display "Usage: ruse.scm TARGET INPUT\n")
+  (exit))
+
+(define target (cadr (command-line)))
+
+(define filepath (caddr (command-line)))
+
+(define program (call-with-input-file filepath read))
+
+(define compiled (my-tiny-compile program))
+
+(cond
+ ((string=? target "javascript")
+  (display (emit compiled))
+  (newline))
+ ((string=? target "scheme")
+  (pretty-print compiled)
+  (newline))
+ (else (display "wrong target choose javascript or scheme\n")))
+
+;; (define add (lambda (a b)
+;;               ;; (pk 'add a b)
+;;               (+ a b)))
+
+;; (define times (lambda (a b)
+;;                 ;; (pk 'times a b)
+;;                 (* a b)))
+
+;; ;; (define program
+;; ;;   '(add '1 '2))
+
+;; ;; (define program
+;; ;;   `(add '10 (times '20 '2)))
+
+;; ;; (define program
+;; ;;   '(let ((square (lambda (value) (times value value))))
+;; ;;      (pk '13)
+;; ;;      (square '1337)))
+
+;; ;; (define program
+;; ;;   `((lambda (XXX YYY)
+;; ;;       (add XXX YYY))
+;; ;;     '100 '200))
+
+;; ;; (define program '(let ((abc '0)) (set! abc '42)))
+
+;; ;; (define program `(letrec ((abc '42))
+;; ;;                    abc))
+
+;; ;; (define program
+;; ;;    '(letrec ((abc '42)
+;; ;;              (def '5)
+;; ;;              (ghi '3))
+;; ;;       (add abc def) ))
+
+;; ;; (define program
+;; ;;   '(let ((input '42))
+;; ;;      (letrec ((odd? (lambda (x) (if (eq? x '0) '0 (even? (add x '-1)))))
+;; ;;               (even? (lambda (x) (if (eq? x '0) '1 (odd? (add x '-1))))))
+;; ;;        (odd? input))))
+
+
+;; ;; (define program
+;; ;;   '(let ((abc '42)
+;; ;;          (def '101))
+;; ;;      ((lambda (x) (add x '-1)) (add abc (times def '100)))))
+
+;; (define program
+;;   '(letrec ((fact (lambda (n total)
+;;                     (if (eq? n '0)
+;;                         total
+;;                         (fact (add n '-1) (times total n))))))
+;;      (fact '1000000 '1)))
+
+;; ;; (define program
+;; ;;   '(letrec ((fib (lambda (n)
+;; ;;                    (if (<= n '2)
+;; ;;                        '1
+;; ;;                        (+ (fib (- n '1)) (fib (- n '2)))))))
+;; ;;      (fib '15)))
+
+
+;; ;; (define program
+;; ;;   '(if '1 '42 '0))
+
+;; ;; (define program
+;; ;;   '(call/cc
+;; ;;     (lambda (cont) (cont '42) '123)))
+
+
+;; ;; (define program
+;; ;;   '(add '42 (call/cc
+;; ;;              (lambda (k) (k '666) (k '42) '666))))
+
+;; ;; (define program
+;; ;;   '(let ((proc (lambda (a b c) (add a (add b c)))))
+;; ;;      (proc '4 '5 (proc '1 '2 '3))))
+
+;; (define (trampoline thunk)
+;;   ;;  (pk 'trampoline thunk)
+;;   (if (procedure? thunk)
+;;       (trampoline (thunk))
+;;       thunk))
+
+
+;; (pk "compiled" compiled)
+;; (pk "javascript output:")
+;; (display (emit compiled))
+;; (newline)
+
 ;; (define out (pk (eval compiled)))
 ;; (trampoline (lambda () (out pk)))
