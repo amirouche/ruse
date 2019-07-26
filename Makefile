@@ -26,4 +26,5 @@ scheme: ## show the translation to scheme
 	./env.sh scheme --script ruse.scm scheme in.scm
 
 javascript: run ## show javascript
+	whereis prettier # npm install -g prettier
 	prettier out.js > out.pretty.js
