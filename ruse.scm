@@ -759,7 +759,7 @@
     ;;; our constants (which indicates a raw constant).
     (Expr : * (e env) -> Expr ()
       (cond
-	[(pair? e)
+       [(pair? e)
 	 (cond
 	   [(assq (car e) env) =>
 	    (lambda (as)
@@ -778,7 +778,7 @@
 		  [(primitive? e) e]
 		  [else (error who "invalid syntax" e)])))]
 	   [else (error who "unbound variable" e)])]
-	[(constant? e) e]
+	[(constant? e) `(quote ,e)]
 	[else (error who "invalid expression" e)]))
     ;;; kick off processing the S-expression by handing Expr our initial
     ;;; S-expression and the initial environment.
