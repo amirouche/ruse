@@ -1,7 +1,7 @@
 ;
 
 function output(x) {
-    pk(x);
+    pk('output', x);
     return function() {};
 }
 

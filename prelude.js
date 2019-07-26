@@ -1,7 +1,7 @@
 function voidf(k) { return k(undefined); };
 
-function pk(x) {
-    console.log(x);
+function pk() {
+    console.log.apply(console, arguments);
 }
 
 function trampoline(thunk) {
@@ -11,6 +11,16 @@ function trampoline(thunk) {
         thunk = thunk();
     }
     return thunk
+}
+
+function prepend(v, a) {
+    // a.slice().unshift(0); // avoid mutation with copy
+    a.unshift(v);
+    return a;
+}
+
+function apply(func, args) {
+    return func.apply(this, args);
 }
 
 function add(a, b) {

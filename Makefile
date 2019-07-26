@@ -28,6 +28,11 @@ debug: ## debug output
 scheme: ## show the translation to scheme
 	./env.sh scheme --script ruse.scm scheme in.scm
 
-javascript: run ## show javascript
+javascript: ## show javascript
 	whereis prettier # npm install -g prettier
+	./env.sh scheme --script ruse.scm javascript in.scm > program.js
+	cat prelude.js program.js postlude.js > out.js
 	prettier out.js > out.pretty.js
+
+serve:
+	python3 -m http.server

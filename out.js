@@ -1,7 +1,7 @@
 function voidf(k) { return k(undefined); };
 
-function pk(x) {
-    console.log(x);
+function pk() {
+    console.log.apply(console, arguments);
 }
 
 function trampoline(thunk) {
@@ -13,6 +13,16 @@ function trampoline(thunk) {
     return thunk
 }
 
+function prepend(v, a) {
+    // a.slice().unshift(0); // avoid mutation with copy
+    a.unshift(v);
+    return a;
+}
+
+function apply(func, args) {
+    return func.apply(this, args);
+}
+
 function add(a, b) {
     return a + b;
 }
@@ -22,11 +32,11 @@ function times(a, b) {
 }
 
 let program =
-(function( kxx ) {  return (function(  ) {  return (function( k ) {  return k ( (function( kk, factorial_0 ) {  return (function(  ) {  return (function( kxx ) {  return (function(  ) {  return (function( k ) {  return k ( (function( kk, t_3 ) {  return (function(  ) {  return (function( kxx ) {  return (function(  ) {  return factorial_0 ( (function( v ) {  return (function(  ) {  return (function( k ) {  return k ( 100 ) ;}) ( (function( v0 ) {  return (function(  ) {  return (function( k ) {  return k ( 1 ) ;}) ( (function( v1 ) {  return (function(  ) {  return v ( kxx, (function( kv ) {  return kv ( v0 ) ;}), (function( kv ) {  return kv ( v1 ) ;}) ) ;}) ;}) ) ;}) ;}) ) ;}) ;}) ) ;}) ;}) ( kk ) ;}) ;}) ) ;}) ( (function( v ) {  return (function(  ) {  return (function( k ) {  return (function(  ) {  factorial_0 = (function( k ) {  return k ( (function( kk, n_1, total_2 ) {  return (function(  ) {  return (function( k ) {  return (function( kpr ) {  return (function(  ) {  return n_1 ( (function( v0 ) {  return (function(  ) {  return (function( k ) {  return k ( 0 ) ;}) ( (function( v1 ) {  return kpr ( v0 === v1 ) ;}) ) ;}) ;}) ) ;}) ;}) ( (function( kif ) {  return /* if */ kif ? (function(  ) {  return total_2 ( k ) ;}) : (function(  ) {  return (function( kxx ) {  return (function(  ) {  return factorial_0 ( (function( v ) {  return (function(  ) {  return (function( kpr ) {  return (function(  ) {  return n_1 ( (function( v0 ) {  return (function(  ) {  return (function( k ) {  return k ( -1 ) ;}) ( (function( v1 ) {  return kpr ( add ( v0, v1 ) ) ;}) ) ;}) ;}) ) ;}) ;}) ( (function( v0 ) {  return (function(  ) {  return (function( kpr ) {  return (function(  ) {  return n_1 ( (function( v0 ) {  return (function(  ) {  return total_2 ( (function( v1 ) {  return kpr ( times ( v0, v1 ) ) ;}) ) ;}) ;}) ) ;}) ;}) ( (function( v1 ) {  return (function(  ) {  return v ( kxx, (function( kv ) {  return kv ( v0 ) ;}), (function( kv ) {  return kv ( v1 ) ;}) ) ;}) ;}) ) ;}) ;}) ) ;}) ;}) ) ;}) ;}) ( k ) ;}) ;}) ) ;}) ( kk ) ;}) ;}) ) ;}); return k ( voidf ) ;}) ;}) ( (function( v0 ) {  return (function(  ) {  return v ( kxx, (function( kv ) {  return kv ( v0 ) ;}) ) ;}) ;}) ) ;}) ;}) ) ;}) ;}) ( kk ) ;}) ;}) ) ;}) ( (function( v ) {  return (function(  ) {  return voidf ( (function( v0 ) {  return (function(  ) {  return v ( kxx, (function( kv ) {  return kv ( v0 ) ;}) ) ;}) ;}) ) ;}) ;}) ) ;}) ;})
+(function( k ) {  return (function(  ) {  return (function( k ) {  return (function(  ) {  return k ( (function( k ) {  return k ( 42 ) ;}), (function( k ) {  return k ( 1337 ) ;}) ) ;}) ;}) ( (function() { let  args  = Array.prototype.slice.call(arguments); return (function(  ) {  return (function( k ) {  return k ( (function( k, a_0, b_1 ) {  return (function(  ) {  return b_1 ( k ) ;}) ;}) ) ;}) ( (function( v1 ) {  return apply ( v1, prepend ( k, args ) ) ;}) ) ;}) ;}) ) ;}) ;})
 ;
 
 function output(x) {
-    pk(x);
+    pk('output', x);
     return function() {};
 }
 

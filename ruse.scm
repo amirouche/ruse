@@ -408,6 +408,8 @@
         x
         c
         (quote d)
+        (values e* ...)
+        (call-with-values e0 e1)
         (if e0 e1)
         (if e0 e1 e2)
         (or e* ...)
@@ -677,6 +679,13 @@
                                             (process-body 'begin env e*
                                                           (lambda (e* e)
                                                             `(begin ,e* ... ,e)))))
+                             (cons 'values (lambda (env . e*)
+                                             (process-body 'values env e*
+                                                           (lambda (e* e)
+                                                             `(values ,e* ... ,e)))))
+                             (cons 'call-with-values (lambda (env producer consumer)
+                                                       `(call-with-values ,(Expr producer env)
+                                                          ,(Expr consumer env))))
                              (cons 'lambda (lambda (env fmls . body*)
                                              (unique-vars env fmls
                                                           (lambda (env fmls)
@@ -965,20 +974,38 @@
                    (lambda () (,e1 k))
                    (lambda () (,e2 k))))))]
 
+        [(lambda () (values ,[e*] ...))
+         `(lambda (k)
+            (lambda () (k ,e* ...)))]
+
+        [(lambda (,x* ...) (values ,[e*] ...))
+         `(lambda (values)
+            (k (lambda (k ,x* ...)
+                 (lambda () (values ,e* ....)))))]
+
         ;; lambda creation
         [(lambda (,x* ...) ,[body])
          `(lambda (k)
-            (k (lambda (kk ,x* ...)
-                 (lambda () (,body kk)))))]
+            (k (lambda (k ,x* ...)
+                 (lambda () (,body k)))))]
+
+        ;; call-with-values
+        [(call-with-values ,[e0] ,[e1])
+         `(lambda (k)
+            (lambda ()
+              (,e0 (lambda args
+                     (lambda ()
+                       (,e1 (lambda (v1)
+                              (apply v1 (prepend k args)))))))))]
 
         ;; primitive application
         [(,pr ,[e0] ,[e1])
-         `(lambda (kpr)
+         `(lambda (k)
             (lambda ()
               (,e0 (lambda (v0)
                      (lambda ()
                        (,e1 (lambda (v1)
-                              (kpr (,pr v0 v1)))))))))]
+                              (k (,pr v0 v1)))))))))]
 
         [(,pr ,[e0])
          (if (eq? pr 'call/cc)
@@ -986,26 +1013,26 @@
                 (,e0
                  (lambda (proc)
                    (proc k (lambda (v) (v (lambda (a b c) (b k))))))))
-             `(lambda (kpr)
+             `(lambda (k)
                 (lambda ()
                   (,e0 (lambda (v0)
                          (lambda()
-                           (kpr (,pr v0))))))))]
+                           (k (,pr v0))))))))]
 
         ;; lambda application
         [(,[e] ,[e0])
-         `(lambda (kxx)
+         `(lambda (k)
             (lambda ()
               (,e (lambda (v)
                     (lambda ()
                       (,e0 (lambda (v0)
                              (lambda ()
-                               (v kxx
+                               (v k
                                   (lambda (kv) (kv v0)))))))))))]
 
         ;; lambda application
         [(,[e] ,[e0] ,[e1])
-         `(lambda (kxx)
+         `(lambda (k)
             (lambda ()
               (,e (lambda (v)
                     (lambda ()
@@ -1013,7 +1040,7 @@
                              (lambda ()
                                (,e1 (lambda (v1)
                                       (lambda ()
-                                        (v kxx
+                                        (v k
                                            (lambda (kv) (kv v0))
                                            (lambda (kv) (kv v1))))))))))))))]
 
@@ -1093,21 +1120,39 @@
 
    ;; function definition
    [(and (pair? x) (eq? (car x) 'lambda))
-    (string-join
-     (append (list "(function("
-                   (emit-args (cadr x))
-                   ") { ")
-             (let loop ((body (cddr x))
-                        (out '()))
-               (cond
-                ((and (pair? body) (pair? (cdr body)))
-                 (loop (cdr body) (cons (string-append (emit (car body)) ";") out)))
-                ((pair? body)
-                 (loop (cdr body) (cons (string-append "return " (emit (car body))) out)))
-                (else (reverse out))))
+    (if (or (pair? (cadr x)) (null? (cadr x)))
+        (string-join
+         (append (list "(function("
+                       (emit-args (cadr x))
+                       ") { ")
+                 (let loop ((body (cddr x))
+                            (out '()))
+                   (cond
+                    ((and (pair? body) (pair? (cdr body)))
+                     (loop (cdr body) (cons (string-append (emit (car body)) ";") out)))
+                    ((pair? body)
+                     (loop (cdr body) (cons (string-append "return " (emit (car body))) out)))
+                    (else (reverse out))))
 
-             (list ";})"))
-     " ")]
+                 (list ";})"))
+         " ")
+        ;; (lambda args fu)
+        (string-join
+         (append (list "(function() { let ")
+                 (list (symbol->c-id (cadr x)))
+                 (list " = Array.prototype.slice.call(arguments);")
+                 (let loop ((body (cddr x))
+                            (out '()))
+                   (cond
+                    ((and (pair? body) (pair? (cdr body)))
+                     (loop (cdr body) (cons (string-append (emit (car body)) ";") out)))
+                    ((pair? body)
+                     (loop (cdr body) (cons (string-append "return " (emit (car body))) out)))
+                    (else (reverse out))))
+
+                 (list ";})"))
+         " "))
+        ]
 
    ;; function call
    [(pair? x)
