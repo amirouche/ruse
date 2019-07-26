@@ -17,7 +17,10 @@ check:  submodules nodejs ## run the tests
 	git diff --quiet ./tests/
 	@echo "\033[36mwin\033[0m"
 
-run: ruse.scm in.scm  ## compile `in.scm` to javascript to `out.js`
+run: ## compile `in.scm` to javascript to `out.js`
 	./env.sh scheme --script ruse.scm javascript in.scm > program.js
 	cat prelude.js program.js postlude.js > out.js
 	nodejs out.js
+
+show: ## show the translation to scheme
+	./env.sh scheme --script ruse.scm scheme in.scm
