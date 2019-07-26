@@ -104,43 +104,6 @@
   (newline (current-error-port))
   (car (reverse args)))
 
-  ;;; Representation of our data types.
-  ;;; We use tagged pointers, because all of our pointers are 8-byte aligned,
-  ;;; leaving te bottom 3 bits always being 0.  Using these 3 bits for tags
-  ;;; lets us store things like fixnums as pointers, and differentiate them
-  ;;; from pointers like closures and vectors.  It also saves us using a word
-  ;;; for a tag when in our representation of vectors, closures, etc.
-(define fixnum-tag   #b000)
-(define fixnum-mask  #b111)
-
-(define pair-tag     #b001)
-(define pair-mask    #b111)
-
-(define box-tag      #b010)
-(define box-mask     #b111)
-
-(define vector-tag   #b011)
-(define vector-mask  #b111)
-
-(define closure-tag  #b100)
-(define closure-mask #b111)
-
-  ;;; NOTE: #b101 is used for constants
-
-(define boolean-tag    #b1101)
-(define boolean-mask   #b1111)
-
-(define true-rep     #b111101)
-(define false-rep    #b101101)
-
-(define null-rep     #b100101)
-(define void-rep     #b110101)
-
-(define fixnum-shift 3)
-(define word-size 8)
-
-
-
   ;;; Helper function for representing unique variables as symbols by adding a
   ;;; number to the variables (so if we start with f we get f.n where n might
   ;;;  be 1, 2, 3, etc, and is unique).
