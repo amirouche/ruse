@@ -17,4 +17,4 @@ check:  submodules nodejs run # run the tests
 run: ruse.scm in.scm  ## compile `in.scm` to javascript to `out.js`
 	./env.sh scheme --script ruse.scm javascript in.scm > program.js
 	cat prelude.js program.js postlude.js > out.js
-	node out.js
+	nodejs out.js
