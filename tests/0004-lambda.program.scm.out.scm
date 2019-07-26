@@ -1,0 +1,31 @@
+(begin
+  (let loop ([thunk ((lambda (k)
+                       (lambda ()
+                         ((lambda (k)
+                            (k (lambda (k XXX.0 YYY.1)
+                                 (lambda ()
+                                   ((lambda (k)
+                                      (lambda ()
+                                        (XXX.0
+                                          (lambda (v0)
+                                            (lambda ()
+                                              (YYY.1
+                                                (lambda (v1)
+                                                  (k (add v0 v1)))))))))
+                                     k)))))
+                           (lambda (v)
+                             (lambda ()
+                               ((lambda (k) (k 100))
+                                 (lambda (v0)
+                                   (lambda ()
+                                     ((lambda (k) (k 200))
+                                       (lambda (v1)
+                                         (lambda ()
+                                           (v k
+                                              (lambda (kv) (kv v0))
+                                              (lambda (kv)
+                                                (kv v1))))))))))))))
+                      display)])
+    (when (procedure? thunk) (loop (thunk))))
+  (newline))
+
