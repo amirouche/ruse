@@ -14,7 +14,7 @@ init: gcc submodules ## Initialize the repository and spawn a shell with the cor
 check: gcc submodules # run the tests
 	./env.sh scheme --script run-tests.ss
 
-run: ruse.scm  ## compile scheme to javascript
-	./env.sh scheme --script ruse.scm > program.js
+run: ruse.scm in.scm  ## compile `in.scm` to javascript to `out.js`
+	./env.sh scheme --script ruse.scm javascript in.scm > program.js
 	cat prelude.js program.js postlude.js > out.js
 	node out.js
