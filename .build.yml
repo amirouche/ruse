@@ -1,6 +1,7 @@
 image: ubuntu/cosmic
 packages:
   - chezscheme
+  - nodejs
 sources:
   - https://git.sr.ht/~amz3/ruse-scheme
 tasks:
