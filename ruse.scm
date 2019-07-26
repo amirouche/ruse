@@ -1177,7 +1177,11 @@
   (display (emit compiled))
   (newline))
  ((string=? target "scheme")
-  (pretty-print compiled)
+  (pretty-print `(begin
+                   (let loop ((thunk (,compiled display)))
+                     (when (procedure? thunk)
+                       (loop (thunk))))
+                   (newline)))
   (newline))
  (else (display "wrong target choose javascript or scheme\n")))
 

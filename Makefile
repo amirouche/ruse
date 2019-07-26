@@ -11,8 +11,11 @@ init: submodules ## Initialize the repository and spawn a shell with the correct
 	@echo "\033[36mRunning your favorite shell...\033[0m"
 	./env.sh
 
-check:  submodules nodejs run # run the tests
-	@echo win
+check:  submodules nodejs ## run the tests
+	./env.sh ./make-check.sh
+	# check that the tests did not change results files
+	git diff --quiet ./tests/
+	@echo "\033[36mwin\033[0m"
 
 run: ruse.scm in.scm  ## compile `in.scm` to javascript to `out.js`
 	./env.sh scheme --script ruse.scm javascript in.scm > program.js
