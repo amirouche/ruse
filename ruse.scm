@@ -978,10 +978,11 @@
          `(lambda (k)
             (lambda () (k ,e* ...)))]
 
-        [(lambda (,x* ...) (values ,[e*] ...))
-         `(lambda (values)
-            (k (lambda (k ,x* ...)
-                 (lambda () (values ,e* ....)))))]
+        ;; [(lambda (,x* ...) (values ,[e*] ...))
+        ;;  (lambda (k)
+        ;;    (lambda (k ,x* ...)
+        ;;      (lambda ()
+        ;;        (k ,e* ....)))]
 
         ;; lambda creation
         [(lambda (,x* ...) ,[body])
