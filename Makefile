@@ -22,6 +22,9 @@ run: ## compile `in.scm` to javascript to `out.js`
 	cat prelude.js program.js postlude.js > out.js
 	nodejs out.js
 
+debug: ## debug output
+	./env.sh scheme --script ruse.scm javascript in.scm
+
 scheme: ## show the translation to scheme
 	./env.sh scheme --script ruse.scm scheme in.scm
 
