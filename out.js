@@ -1,8 +1,7 @@
 function voidf(k) { return k(undefined); };
 
-function pk(x, y) {
-    console.log("pk", x, y);
-    return voidf;
+function pk(x) {
+    console.log(x);
 }
 
 function trampoline(thunk) {
@@ -27,7 +26,7 @@ let program =
 ;
 
 function output(x) {
-    pk('output', x);
+    pk(x);
     return function() {};
 }
 
