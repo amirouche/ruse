@@ -961,9 +961,8 @@
 
         [(set! ,x ,[e])
          `(lambda (k)
-            (lambda ()
-              (set! ,x ,e)
-              (k (void))))]
+            (set! ,x ,e)
+            (k (void)))]
 
         ;; if branch
         [(if ,[e0] ,[e1] ,[e2])
@@ -971,8 +970,8 @@
             (,e0
              (lambda (kif)
                (if kif
-                   (lambda () (,e1 k))
-                   (lambda () (,e2 k))))))]
+                   (,e1 k)
+                   (,e2 k)))))]
 
         [(lambda () (values ,[e*] ...))
          `(lambda (k)
@@ -988,25 +987,21 @@
         [(lambda (,x* ...) ,[body])
          `(lambda (k)
             (k (lambda (k ,x* ...)
-                 (lambda () (,body k)))))]
+                 (,body k))))]
 
         ;; call-with-values
         [(call-with-values ,[e0] ,[e1])
          `(lambda (k)
-            (lambda ()
-              (,e0 (lambda args
-                     (lambda ()
-                       (,e1 (lambda (v1)
-                              (apply v1 (prepend k args)))))))))]
+            (,e0 (lambda args
+                   (,e1 (lambda (v1)
+                          (apply v1 (prepend k args)))))))]
 
         ;; primitive application
         [(,pr ,[e0] ,[e1])
          `(lambda (k)
-            (lambda ()
-              (,e0 (lambda (v0)
-                     (lambda ()
-                       (,e1 (lambda (v1)
-                              (k (,pr v0 v1)))))))))]
+            (,e0 (lambda (v0)
+                   (,e1 (lambda (v1)
+                          (k (,pr v0 v1)))))))]
 
         [(,pr ,[e0])
          (if (eq? pr 'call/cc)
@@ -1015,35 +1010,28 @@
                  (lambda (proc)
                    (proc k (lambda (v) (v (lambda (a b c) (b k))))))))
              `(lambda (k)
-                (lambda ()
-                  (,e0 (lambda (v0)
-                         (lambda()
-                           (k (,pr v0))))))))]
+                (,e0 (lambda (v0)
+                       (k (,pr v0))))))]
 
         ;; lambda application
         [(,[e] ,[e0])
          `(lambda (k)
-            (lambda ()
-              (,e (lambda (v)
-                    (lambda ()
-                      (,e0 (lambda (v0)
-                             (lambda ()
-                               (v k
-                                  (lambda (kv) (kv v0)))))))))))]
+            (,e (lambda (v)
+                  (,e0 (lambda (v0)
+                         (lambda ()
+                           (v k
+                              (lambda (kv) (kv v0)))))))))]
 
         ;; lambda application
         [(,[e] ,[e0] ,[e1])
          `(lambda (k)
-            (lambda ()
-              (,e (lambda (v)
-                    (lambda ()
-                      (,e0 (lambda (v0)
-                             (lambda ()
-                               (,e1 (lambda (v1)
-                                      (lambda ()
-                                        (v k
-                                           (lambda (kv) (kv v0))
-                                           (lambda (kv) (kv v1))))))))))))))]
+            (,e (lambda (v)
+                  (,e0 (lambda (v0)
+                         (,e1 (lambda (v1)
+                                (lambda ()
+                                  (v k
+                                     (lambda (kv) (kv v0))
+                                     (lambda (kv) (kv v1)))))))))))]
 
         [(quote ,d) `(lambda (k) (k ,d))]))
 
@@ -1153,7 +1141,7 @@
 
                  (list ";})"))
          " "))
-        ]
+    ]
 
    ;; function call
    [(pair? x)
