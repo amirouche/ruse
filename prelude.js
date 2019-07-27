@@ -30,9 +30,11 @@ function apply(func, args) {
 
 function returnk(k) { return k; };
 
+function unwrap(k) { return k(returnk) };
+
 function apply2(func, args) {
     // unwrap ARGS and apply FUNC
-    args = args.map(function(v) { return v(returnk); });
+    args = args.map(unwrap);
     return func.apply(undefined, args);
 }
 
