@@ -410,6 +410,7 @@
         (quote d)
         (values e* ...)
         (foreign-procedure x)
+        (foreign-callable e0)
         (call-with-values e0 e1)
         (if e0 e1)
         (if e0 e1 e2)
@@ -616,15 +617,15 @@
       ;;; with-output-language rebinds quasiquote so that it will build
       ;;; language records.
     (with-output-language (Lsrc Expr)
-	;;; build-primitive - this is a helper function to build entries in the
-	;;; initial environment for our user primitives.  the initial
-	;;; enviornment contains a mapping of keywords and primitives to
-	;;; processing functions that check their arity (in the case of
-	;;; primitives) or their forms (in the case of keywords).  These are
-	;;; put into an environment, because keywords and primitives can be
-	;;; rebound.  (i.e. (lambda (lambda) (lambda lambda)) is a perfectly
-	;;; valid function in Scheme that takes a function as an argument and
-	;;; applies the argument to itself).
+        ;;; build-primitive - this is a helper function to build entries in the
+        ;;; initial environment for our user primitives.  the initial
+        ;;; enviornment contains a mapping of keywords and primitives to
+        ;;; processing functions that check their arity (in the case of
+        ;;; primitives) or their forms (in the case of keywords).  These are
+        ;;; put into an environment, because keywords and primitives can be
+        ;;; rebound.  (i.e. (lambda (lambda) (lambda lambda)) is a perfectly
+        ;;; valid function in Scheme that takes a function as an argument and
+        ;;; applies the argument to itself).
                           (define build-primitive
                             (lambda (as)
                               (let ([name (car as)] [argc (cdr as)])
@@ -633,15 +634,15 @@
                                           (error who
                                                  "primitives with arbitrary counts are not currently supported"
                                                  name)
-		    ;;; we'd love to support arbitrary argument lists, but we'd
-		    ;;; need to either:
-		    ;;;   1. get rid of raw primitives, or
-		    ;;;   2. add function versions of our raw primitives with
-		    ;;;      arbitrary arguments, or (possibly and)
-		    ;;;   3. add general handling for functions with arbitrary
-		    ;;;      arguments. (i.e. support for (lambda args <body>)
-		    ;;;      or (lambda (x y . args) <body>), which we don't
-		    ;;;      currently support.
+                    ;;; we'd love to support arbitrary argument lists, but we'd
+                    ;;; need to either:
+                    ;;;   1. get rid of raw primitives, or
+                    ;;;   2. add function versions of our raw primitives with
+                    ;;;      arbitrary arguments, or (possibly and)
+                    ;;;   3. add general handling for functions with arbitrary
+                    ;;;      arguments. (i.e. support for (lambda args <body>)
+                    ;;;      or (lambda (x y . args) <body>), which we don't
+                    ;;;      currently support.
                                           #;(let ([argc (bitwise-not argc)])
                                           (lambda (env . e*)
                                           (if (>= (length e*) argc)
@@ -653,12 +654,12 @@
                                                 `(,name ,(Expr* e* env) ...)
                                                 (error name "invalid argument count"
                                                        (cons name e*)))))))))
-	;;; initial-env - this is our initial environment, expressed as an
-	;;; association list of keywords and primitives (represented as
-	;;; symbols) to procedure handlers (represented as procedures).  As the
-	;;; program is processed through this pass, it will be extended with
-	;;; local bidings from variables (represented as symbols) to unique
-	;;; variables (represented as symbols with a format of symbol.number).
+        ;;; initial-env - this is our initial environment, expressed as an
+        ;;; association list of keywords and primitives (represented as
+        ;;; symbols) to procedure handlers (represented as procedures).  As the
+        ;;; program is processed through this pass, it will be extended with
+        ;;; local bidings from variables (represented as symbols) to unique
+        ;;; variables (represented as symbols with a format of symbol.number).
                           (define initial-env
                             (cons*
                              (cons 'quote (lambda (env d)
@@ -686,6 +687,8 @@
                                                              `(values ,e* ... ,e)))))
                              (cons 'foreign-procedure (lambda (env x)
                                                         `(foreign-procedure ,x)))
+                             (cons 'foreign-callable (lambda (env e)
+                                                        `(foreign-callable ,(Expr e env))))
                              (cons 'call-with-values (lambda (env producer consumer)
                                                        `(call-with-values ,(Expr producer env)
                                                           ,(Expr consumer env))))
@@ -721,7 +724,7 @@
                                             [else (error 'set! "set to unbound variable"
                                                          (list 'set! x e))])))
                              (map build-primitive user-prims)))
-	;;; App - helper for handling applications.
+        ;;; App - helper for handling applications.
                           (define App
                             (lambda (e env)
                               (let ([e (car e)] [e* (cdr e)])
@@ -736,23 +739,23 @@
         (cond
          [(pair? e)
           (cond
-	   [(assq (car e) env) =>
-	    (lambda (as)
-	      (let ([v (cdr as)])
-		(if (procedure? v)
-		    (apply v env (cdr e))
-		    (App e env))))]
-	   [else (App e env)])]
+           [(assq (car e) env) =>
+            (lambda (as)
+              (let ([v (cdr as)])
+                (if (procedure? v)
+                    (apply v env (cdr e))
+                    (App e env))))]
+           [else (App e env)])]
          [(symbol? e)
           (cond
-	   [(assq e env) =>
-	    (lambda (as)
-	      (let ([v (cdr as)])
-		(cond
+           [(assq e env) =>
+            (lambda (as)
+              (let ([v (cdr as)])
+                (cond
                  [(symbol? v) v]
                  [(primitive? e) e]
                  [else (error who "invalid syntax" e)])))]
-	   [else (error who "unbound variable" e)])]
+           [else (error who "unbound variable" e)])]
          [(constant? e) `(quote ,e)]
          [else (error who "invalid expression" e)]))
     ;;; kick off processing the S-expression by handing Expr our initial
@@ -993,6 +996,14 @@
                    (let k (shift ,args))
                    (k (apply2 ,x ,args))))))]
 
+        [(foreign-callable ,[e0])
+         (let ((args (make-tmp)))
+           `(lambda (k)
+              (k (lambda ,args
+                   (set! ,args (map wrap ,args))
+                   (prepend returnk ,args)
+                   (trampoline (apply (,e0 returnk) ,args))))))]
+
         ;; lambda creation
         [(lambda (,x* ...) ,[body])
          `(lambda (k)
@@ -1102,6 +1113,11 @@
    ;; (void)
    [(and (pair? x) (eq? (car x) 'void))
     "voidf"]
+
+   ;; (map func array)
+   [(and (pair? x) (eq? (car x) 'map))
+    (string-append (emit (list-ref x 2)) ".map(" (emit (list-ref x 1)) ")")]
+
 
    ;; (let a b)
    [(and (pair? x) (eq? (car x) 'let))

@@ -30,6 +30,8 @@ function apply(func, args) {
 
 function returnk(k) { return k; };
 
+function wrap(v) { return function(k) { return k(v); } ;};
+
 function unwrap(k) { return k(returnk) };
 
 function apply2(func, args) {
@@ -50,5 +52,11 @@ function times(a, b) {
 function frob(a, b, c) {
     return a + b + c;
 }
+
+function frob2(func) {
+    out = func(42, 42);
+    return out;
+}
+
 
 let program =
