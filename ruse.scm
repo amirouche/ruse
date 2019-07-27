@@ -306,7 +306,7 @@
   ;;; determine if we have a constant: #t, #f, '(), or 61-bit signed integer.
 (define constant?
   (lambda (x)
-    (or (target-fixnum? x) (boolean? x) (null? x))))
+    (or (string? x) (target-fixnum? x) (boolean? x) (null? x))))
 
   ;;; determine if we have a valid datum (a constant, a pair of datum, or a
   ;;; vector of datum)
@@ -409,6 +409,7 @@
         c
         (quote d)
         (values e* ...)
+        (foreign-procedure x)
         (call-with-values e0 e1)
         (if e0 e1)
         (if e0 e1 e2)
@@ -683,6 +684,8 @@
                                              (process-body 'values env e*
                                                            (lambda (e* e)
                                                              `(values ,e* ... ,e)))))
+                             (cons 'foreign-procedure (lambda (env x)
+                                                        `(foreign-procedure ,x)))
                              (cons 'call-with-values (lambda (env producer consumer)
                                                        `(call-with-values ,(Expr producer env)
                                                           ,(Expr consumer env))))
@@ -983,6 +986,13 @@
         ;;      (lambda ()
         ;;        (k ,e* ....)))]
 
+        [(foreign-procedure ,x)
+         (let ((args (make-tmp)))
+           `(lambda (k)
+              (k (lambda ,args
+                   (let k (shift ,args))
+                   (k (apply2 ,x ,args))))))]
+
         ;; lambda creation
         [(lambda (,x* ...) ,[body])
          `(lambda (k)
@@ -1086,12 +1096,16 @@
 (define (emit x)
   (cond
    [(number? x) (number->string x)]
-   [(string? x) x]
+   [(string? x) (string-append "\"" x "\"")]
    [(symbol? x) (symbol->c-id x)]
 
    ;; (void)
    [(and (pair? x) (eq? (car x) 'void))
     "voidf"]
+
+   ;; (let a b)
+   [(and (pair? x) (eq? (car x) 'let))
+    (string-append "let " (symbol->c-id (cadr x)) " = " (emit (caddr x)))]
 
    ;; (eq? a b)
    [(and (pair? x) (eq? (car x) 'eq?))

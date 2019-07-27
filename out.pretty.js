@@ -21,11 +21,16 @@ function prepend(v, a) {
   return a;
 }
 
+function shift(a) {
+  return a.shift();
+}
+
 function apply(func, args) {
-  return func.apply(this, args);
+  return func.apply(undefined, args);
 }
 
 function add(a, b) {
+  pk("adding....");
   return a + b;
 }
 
@@ -35,31 +40,38 @@ function times(a, b) {
 
 let program = function(k) {
   return (function(k) {
-    return k(function(k, abc_0) {
+    return k(function(k, add2_0) {
       return (function(k) {
-        return (function(k) {
-          return k(function(k, t_1) {
-            return abc_0(k);
-          });
-        })(function(v0) {
+        return add2_0(function(v0) {
           return (function(k) {
-            abc_0 = function(k) {
-              return k(42);
-            };
-            return k(voidf);
-          })(function(v) {
-            return function() {
-              return v0(k, function(k) {
-                return k(v);
-              });
-            };
+            return k(40);
+          })(function(t_1) {
+            return (function(k) {
+              return k(2);
+            })(function(v) {
+              return function() {
+                return v0(
+                  k,
+                  function(k) {
+                    return k(t_1);
+                  },
+                  function(k) {
+                    return k(v);
+                  }
+                );
+              };
+            });
           });
         });
       })(k);
     });
   })(function(v0) {
     return (function(k) {
-      return k(voidf);
+      return k(function() {
+        let t_2 = Array.prototype.slice.call(arguments);
+        let k = shift(t_2);
+        return k(apply(add, t_2));
+      });
     })(function(v) {
       return function() {
         return v0(k, function(k) {

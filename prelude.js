@@ -19,9 +19,23 @@ function prepend(v, a) {
     return a;
 }
 
+function shift(a) {
+    return a.shift();
+}
+
 function apply(func, args) {
+    // apply FUNC to ARGS
     return func.apply(undefined, args);
 }
+
+function returnk(k) { return k; };
+
+function apply2(func, args) {
+    // unwrap ARGS and apply FUNC
+    args = args.map(function(v) { return v(returnk); });
+    return func.apply(undefined, args);
+}
+
 
 function add(a, b) {
     return a + b;
@@ -29,6 +43,10 @@ function add(a, b) {
 
 function times(a, b) {
     return a * b;
+}
+
+function frob(a, b, c) {
+    return a + b + c;
 }
 
 let program =

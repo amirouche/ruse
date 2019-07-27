@@ -19,9 +19,23 @@ function prepend(v, a) {
     return a;
 }
 
-function apply(func, args) {
-    return func.apply(this, args);
+function shift(a) {
+    return a.shift();
 }
+
+function apply(func, args) {
+    // apply FUNC to ARGS
+    return func.apply(undefined, args);
+}
+
+function returnk(k) { return k; };
+
+function apply2(func, args) {
+    // unwrap ARGS and apply FUNC
+    args = args.map(function(v) { return v(returnk); });
+    return func.apply(undefined, args);
+}
+
 
 function add(a, b) {
     return a + b;
@@ -31,8 +45,12 @@ function times(a, b) {
     return a * b;
 }
 
+function frob(a, b, c) {
+    return a + b + c;
+}
+
 let program =
-(function( k ) {  return (function( k ) {  return k ( (function( k, abc_0 ) {  return (function( k ) {  return (function( k ) {  return k ( (function( k, t_1 ) {  return abc_0 ( k ) ;}) ) ;}) ( (function( v0 ) {  return (function( k ) {  abc_0 = (function( k ) {  return k ( 42 ) ;}); return k ( voidf ) ;}) ( (function( v ) {  return (function(  ) {  return v0 ( k, (function( k ) {  return k ( v ) ;}) ) ;}) ;}) ) ;}) ) ;}) ( k ) ;}) ) ;}) ( (function( v0 ) {  return voidf ( (function( v ) {  return (function(  ) {  return v0 ( k, (function( k ) {  return k ( v ) ;}) ) ;}) ;}) ) ;}) ) ;})
+(function( k ) {  return (function( k ) {  return k ( (function( k, frob_0 ) {  return (function( k ) {  return frob_0 ( (function( v0 ) {  return (function( k ) {  return k ( "hello" ) ;}) ( (function( t_1 ) {  return (function( k ) {  return k ( " " ) ;}) ( (function( t_2 ) {  return (function( k ) {  return k ( "world" ) ;}) ( (function( v ) {  return (function(  ) {  return v0 ( k, (function( k ) {  return k ( t_1 ) ;}), (function( k ) {  return k ( t_2 ) ;}), (function( k ) {  return k ( v ) ;}) ) ;}) ;}) ) ;}) ) ;}) ) ;}) ) ;}) ( k ) ;}) ) ;}) ( (function( v0 ) {  return (function( k ) {  return k ( (function() { let  t_3  = Array.prototype.slice.call(arguments); let k = shift ( t_3 ); return k ( apply2 ( frob, t_3 ) ) ;}) ) ;}) ( (function( v ) {  return (function(  ) {  return v0 ( k, (function( k ) {  return k ( v ) ;}) ) ;}) ;}) ) ;}) ) ;})
 ;
 
 function output(x) {
