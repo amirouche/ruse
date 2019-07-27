@@ -4,7 +4,7 @@ PWD=$(pwd)
 
 set -e
 
-for file in $(ls $PWD/tests/*.program.scm); do
+for file in $(ls $PWD/tests/*.scm); do
     ./run-test.sh $file
 done;
 
