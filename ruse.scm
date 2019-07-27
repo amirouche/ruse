@@ -991,10 +991,11 @@
 
         ;; call-with-values
         [(call-with-values ,[e0] ,[e1])
-         `(lambda (k)
-            (,e0 (lambda args
-                   (,e1 (lambda (v1)
-                          (apply v1 (prepend k args)))))))]
+         (let ((args (make-tmp)))
+           `(lambda (k)
+              (,e0 (lambda ,args
+                       (,e1 (lambda (v1)
+                              (apply v1 (prepend k ,args))))))))]
 
         ;; primitive application
         [(,pr ,[e0] ,[e1])
