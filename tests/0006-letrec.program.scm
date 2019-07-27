@@ -1,2 +1,2 @@
-(letrec ((abc '42))
+(letrec ((abc 42))
   abc)

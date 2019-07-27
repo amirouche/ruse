@@ -1014,25 +1014,30 @@
                 (,e0 (lambda (v0)
                        (k (,pr v0))))))]
 
-        ;; lambda application
-        [(,[e] ,[e0])
-         `(lambda (k)
-            (,e (lambda (v)
-                  (,e0 (lambda (v0)
-                         (lambda ()
-                           (v k
-                              (lambda (kv) (kv v0)))))))))]
+        ;; XXX: workaround (void)
+        [(,pr)
+         `(,pr)]
 
-        ;; lambda application
-        [(,[e] ,[e0] ,[e1])
+        ;; lambda application zero arguments
+        [(,[e])
          `(lambda (k)
             (,e (lambda (v)
-                  (,e0 (lambda (v0)
-                         (,e1 (lambda (v1)
-                                (lambda ()
-                                  (v k
-                                     (lambda (kv) (kv v0))
-                                     (lambda (kv) (kv v1)))))))))))]
+                  (lambda ()
+                    (v k)))))]
+
+        ;; lambda application one or more arguments
+        [(,[e0] ,[e*] ... ,[e])
+         `(lambda (k)
+            (,e0 (lambda (v0)
+                   ,(let f ((e* e*)
+                            (v* '()))
+                      (if (null? e*)
+                          `(,e (lambda (v)
+                                 (lambda ()
+                                   (v0 k (lambda (k) (k ,v*)) ... (lambda (k) (k v))))))
+                          (let ((tmp (make-tmp)))
+                            `(,(car e*)
+                              (lambda (,tmp) ,(f (cdr e*) (append v* (list tmp)))))))))))]
 
         [(quote ,d) `(lambda (k) (k ,d))]))
 

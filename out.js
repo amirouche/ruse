@@ -32,7 +32,7 @@ function times(a, b) {
 }
 
 let program =
-(function( k ) {  return (function( k ) {  return k ( (function( k, cont_0 ) {  return (function( k ) {  return (function( k ) {  return k ( (function( k, t_1 ) {  return (function( k ) {  return k ( 42 ) ;}) ( k ) ;}) ) ;}) ( (function( v ) {  return (function( k ) {  return k ( 0 ) ;}) ( (function( v0 ) {  return (function(  ) {  return v ( k, (function( kv ) {  return kv ( v0 ) ;}) ) ;}) ;}) ) ;}) ) ;}) ( k ) ;}) ) ;}) ( (function( proc ) {  return proc ( k, (function( v ) {  return v ( (function( a, b, c ) {  return b ( k ) ;}) ) ;}) ) ;}) ) ;})
+(function( k ) {  return (function( k ) {  return k ( (function( k, abc_0 ) {  return (function( k ) {  return (function( k ) {  return k ( (function( k, t_1 ) {  return abc_0 ( k ) ;}) ) ;}) ( (function( v0 ) {  return (function( k ) {  abc_0 = (function( k ) {  return k ( 42 ) ;}); return k ( voidf ) ;}) ( (function( v ) {  return (function(  ) {  return v0 ( k, (function( k ) {  return k ( v ) ;}) ) ;}) ;}) ) ;}) ) ;}) ( k ) ;}) ) ;}) ( (function( v0 ) {  return voidf ( (function( v ) {  return (function(  ) {  return v0 ( k, (function( k ) {  return k ( v ) ;}) ) ;}) ;}) ) ;}) ) ;})
 ;
 
 function output(x) {

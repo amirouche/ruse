@@ -22,7 +22,7 @@ function prepend(v, a) {
 }
 
 function apply(func, args) {
-    return func.apply(undefined, args);
+  return func.apply(this, args);
 }
 
 function add(a, b) {
@@ -34,35 +34,40 @@ function times(a, b) {
 }
 
 let program = function(k) {
-  return function() {
-    return (function(k) {
-      return function() {
-        return k(
-          function(k) {
-            return k(42);
-          },
-          function(k) {
-            return k(1337);
-          }
-        );
-      };
-    })(function() {
-      let args = Array.prototype.slice.call(arguments);
-      return function() {
+  return (function(k) {
+    return k(function(k, abc_0) {
+      return (function(k) {
         return (function(k) {
-            return k(function(k, a_0, b_1) {
-                pk ("!!!");
+          return k(function(k, t_1) {
+            return abc_0(k);
+          });
+        })(function(v0) {
+          return (function(k) {
+            abc_0 = function(k) {
+              return k(42);
+            };
+            return k(voidf);
+          })(function(v) {
             return function() {
-              return a_0(k);
+              return v0(k, function(k) {
+                return k(v);
+              });
             };
           });
-        })(function(v1) {
-            pk(v1+'');
-          return apply(v1, prepend(k, args));
+        });
+      })(k);
+    });
+  })(function(v0) {
+    return (function(k) {
+      return k(voidf);
+    })(function(v) {
+      return function() {
+        return v0(k, function(k) {
+          return k(v);
         });
       };
     });
-  };
+  });
 };
 function output(x) {
   pk("output", x);
