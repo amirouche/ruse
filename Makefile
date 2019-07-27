@@ -13,8 +13,6 @@ init: submodules ## Initialize the repository and spawn a shell with the correct
 
 check:  submodules nodejs ## run the tests
 	./env.sh ./make-check.sh
-	# check that the tests did not change results files
-	git diff --quiet ./tests/
 	@echo "\033[36mwin\033[0m"
 
 run: ## compile `in.scm` to javascript to `out.js`
