@@ -20,7 +20,7 @@ function prepend(v, a) {
 }
 
 function apply(func, args) {
-    return func.apply(this, args);
+    return func.apply(undefined, args);
 }
 
 function add(a, b) {
