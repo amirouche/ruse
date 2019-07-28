@@ -762,22 +762,22 @@
     ;;; S-expression and the initial environment.
   (Expr e initial-env))
 
-;; (trace-define-pass flatten-begin : Lsrc (e) -> Lsrc ()
-;;   (Expr : Expr (e) -> Expr ()
-;;         [(begin ,[e0*] ... ,e0)
-;;          (pk e0*)
-;;          (let f ((e0* e0*)
-;;                  (out '()))
-;;            (if (null? e0*)
-;;                (begin (pk 'asd) `(begin ,out))
-;;                (let ((e (car e0*)))
-;;                  (nanopass-case (Lsrc Expr)  e
-;;                                 [(begin ,e0 ...)
-;;                                  (pk e0)
-;;                                (f (cdr e0*) `(,out ,e0 ...))]
-;;                                 [else
-;;                                  (pk 'fuu)
-;;                                (f (cdr e0*) `(,out ,e))]))))]))
+(define-pass flatten-begin : Lsrc (e) -> Lsrc ()
+  (Expr : Expr (e) -> Expr ()
+        [(begin ,[e0*] ... ,[e0])
+         (let loop ((e0* e0*)
+                    (out '()))
+           (if (null? e0*)
+               (nanopass-case (Lsrc Expr) e0
+                              [(begin ,e1* ... ,e1)
+                               `(begin ,(reverse out) ... ,e1* ... ,e1)]
+                              [else `(begin ,(reverse out) ... ,e0)])
+               (nanopass-case (Lsrc Expr) (car e0*)
+                              [(begin ,e1* ... ,e1)
+                               (loop (cdr e0*) (append (list e1) (reverse e1*) out))]
+                              [else
+                               (loop (cdr e0*) (cons (car e0*) out))])))]))
+
 
   ;;; pass: remove-one-armed-if : Lsrc -> L1
   ;;;
@@ -1083,7 +1083,7 @@
 ;; them in sequence checking to sexe if the programmer wants them traced.
 (define-compiler my-tiny-compile
   (parse-and-rename unparse-Lsrc)
-  ;; (flatten-begin unparse-Lsrc)
+  (flatten-begin unparse-Lsrc)
   (remove-one-armed-if unparse-L1)
   (remove-and-or-not unparse-L2)
   (make-begin-explicit unparse-L3)

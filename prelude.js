@@ -2,6 +2,7 @@ function voidf(k) { return k(undefined); };
 
 function pk() {
     console.log.apply(console, arguments);
+    return arguments[arguments.length - 1];
 }
 
 function trampoline(thunk) {
