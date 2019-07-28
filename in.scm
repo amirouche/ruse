@@ -1,4 +1,14 @@
-(let ((frob2 (foreign-procedure frob2))
-      (v 1))
-  (pk (frob2 (foreign-callable (lambda (a b) (pk a) (set! v b) 1337))))
-  v)
+(begin
+  (pk 41)
+  (begin
+    40
+    (pk 42)
+    (begin
+      43
+      43
+      (pk 44)))
+  (begin
+    45
+    45
+    (pk 46))
+  (pk 47))

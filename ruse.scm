@@ -762,6 +762,23 @@
     ;;; S-expression and the initial environment.
   (Expr e initial-env))
 
+;; (trace-define-pass flatten-begin : Lsrc (e) -> Lsrc ()
+;;   (Expr : Expr (e) -> Expr ()
+;;         [(begin ,[e0*] ... ,e0)
+;;          (pk e0*)
+;;          (let f ((e0* e0*)
+;;                  (out '()))
+;;            (if (null? e0*)
+;;                (begin (pk 'asd) `(begin ,out))
+;;                (let ((e (car e0*)))
+;;                  (nanopass-case (Lsrc Expr)  e
+;;                                 [(begin ,e0 ...)
+;;                                  (pk e0)
+;;                                (f (cdr e0*) `(,out ,e0 ...))]
+;;                                 [else
+;;                                  (pk 'fuu)
+;;                                (f (cdr e0*) `(,out ,e))]))))]))
+
   ;;; pass: remove-one-armed-if : Lsrc -> L1
   ;;;
   ;;; this pass replaces the (if e0 e1) form with an if that will explicitly
@@ -1066,6 +1083,7 @@
 ;; them in sequence checking to sexe if the programmer wants them traced.
 (define-compiler my-tiny-compile
   (parse-and-rename unparse-Lsrc)
+  ;; (flatten-begin unparse-Lsrc)
   (remove-one-armed-if unparse-L1)
   (remove-and-or-not unparse-L2)
   (make-begin-explicit unparse-L3)
@@ -1106,6 +1124,7 @@
 
 (define (emit x)
   (cond
+   [(null? x) "EMPTY_LIST"]
    [(number? x) (number->string x)]
    [(string? x) (string-append "\"" x "\"")]
    [(symbol? x) (symbol->c-id x)]
@@ -1202,6 +1221,16 @@
 (define filepath (caddr (command-line)))
 
 (define program (call-with-input-file filepath read))
+
+;; (define (flatten-begin exp)
+;;   (let loop ((exp exp)
+;;              (out '()))
+;;     (if (null? exp)
+;;         out
+;;         (begin
+;;           (if (and (pair? (car exp)) (eq? (caar exp) 'begin))
+;;               (loop (cdr exp) (append out (flatten-begin (cdar exp))))
+;;               (loop (cdr exp) (append out (list (car exp)))))))))
 
 (define compiled (my-tiny-compile program))
 

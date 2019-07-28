@@ -59,4 +59,6 @@ function frob2(func) {
 }
 
 
+let EMPTY_LIST = function() { return "EMPTY LIST"; };
+
 let program =
