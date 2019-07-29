@@ -409,6 +409,7 @@
         c
         (quote d)
         (values e* ...)
+        (define x e)
         (foreign-procedure x)
         (foreign-callable e0)
         (call-with-values e0 e1)
@@ -685,6 +686,10 @@
                                              (process-body 'values env e*
                                                            (lambda (e* e)
                                                              `(values ,e* ... ,e)))))
+                             (cons 'define (lambda (env x e)
+                                             (process-bindings #f env (list (list x e))
+                                                               (lambda (env x* e*)
+                                                                 `(define ,(car x*) ,(car e*))))))
                              (cons 'foreign-procedure (lambda (env x)
                                                         `(foreign-procedure ,x)))
                              (cons 'foreign-callable (lambda (env e)
