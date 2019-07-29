@@ -1,6 +1,6 @@
 (define-library (example)
-  (export example proc)
+  (export example example2)
+  (import (example2))
 
   (begin
-    (define example 101)
-    (define (proc) (cons 4 2))))
+    (define example 101)))

@@ -91,11 +91,8 @@
 ;;; TBD
 ;;;
 ;;;
-(import (only (chezscheme) import)
-        (nanopass)
-        (rnrs)
-        (only (implementation-helpers) printf format system pretty-print))
-(import (only (chezscheme) eval))
+(import (chezscheme)
+        (nanopass))
 
 
 (define (pk . args)

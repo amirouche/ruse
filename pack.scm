@@ -30,7 +30,7 @@
 (define (read-library filepath)
   (car (read-file filepath)))
 
-(define (program-split program)
+(define (program-body+imports program)
   (let loop ((program program)
              (imports '()))
     (cond
@@ -38,17 +38,29 @@
       (error 'packer "program body is empty"))
      ((and (pair? (car program))
            (eq? (caar program) 'import))
-      ;; TODO: support multiple imported libraries in the same import
-      ;; statement.
-      (loop (cdr program) (cons (cadar program) imports)))
+      (loop (cdr program) (append (cdar program) imports)))
      (else (values program imports)))))
 
+(define (explode definition)
+  (let loop ((body (cddr definition))
+             (exports '())
+             (imports '()))
+    (cond
+     ((null? body) (values exports imports '()))
+     ((and (pair? (car body)) (eq? (caar body) 'begin))
+      (values exports imports (cdar body)))
+     ((and (pair? (car body)) (eq? (caar body) 'export))
+      (loop (cdr body) (append (cdar body) exports) imports))
+     ((and (pair? (car body)) (eq? (caar body) 'import))
+      (loop (cdr body) exports (append (cdar body) imports)))
+     (else (error 'packer "error during library parsing" (cadr definition))))))
 
-(define program (pk (read-file (cadr (command-line)))))
+(define program (read-file (cadr (command-line))))
 
-(define-values (program imports) (program-split program))
+(define-values (program imports) (program-body+imports program))
 
 (define libraries '())
+(define program-dependencies '())
 
 (define string-join
   (lambda (str* jstr)
@@ -69,41 +81,69 @@
             (loop (cdr alist))))))
 
 (define library-module-names '())
+(define dependencies '())
 
+
+;; read all required libraries
 (let loop ((imports imports))
   (unless (null? imports)
     ;; deduplicate libraries
-    (unless (ref libraries (car imports))
-      (let ((library (read-library (library-name->filepath (car imports)))))
-        (set! libraries (cons (cons (car imports) library) libraries))
-        (set! library-module-names (cons (cons (car imports) (make-module-name))
-                                         library-module-names))
-        (loop (cdr imports))))))
+    (if (ref libraries (car imports))
+        (loop (cdr imports))
+        (let ((library (read-library (library-name->filepath (car imports)))))
+          (set! libraries (cons (cons (car imports) library) libraries))
+          (set! library-module-names (cons (cons (car imports) (make-module-name))
+                                           library-module-names))
+          (call-with-values (lambda () (explode library))
+            (lambda (exports depends body)
+              (let loop ((depends depends))
+                (unless (null? depends)
+                  (set! dependencies (cons (cons (car imports) (car depends))
+                                           dependencies))
+                  (loop (cdr depends))))
+              (loop (append (cdr imports) depends))))))))
 
 (define module-bodies '())
 
-(define (explode body)
-  (let loop ((body body)
-             (exports '())
-             (imports '()))
-    (cond
-     ((null? body) (values exports imports '()))
-     ((and (pair? (car body)) (eq? (caar body) 'begin))
-      (values exports imports (cdar body)))
-     ((and (pair? (car body)) (eq? (caar body) 'export))
-      (loop (cdr body) (append (cdar body) exports) imports))
-     ((and (pair? (car body)) (eq? (caar body) 'import))
-      (loop (cdr body) exports (append (cdar body) imports)))
-     (else (error 'packer "error during library parsing")))))
-
-
 (define (process name module-name definition)
   (assert (equal? (cadr definition) name))
-  (call-with-values (lambda () (explode (cddr definition)))
+  (call-with-values (lambda () (explode definition))
     (lambda (exports imports body)
-      (set! module-bodies (cons `(module ,module-name ,exports ,@body)
-                                module-bodies)))))
+      (let* ((imports (map (lambda (x) (ref library-module-names x)) imports))
+             (body `(module ,module-name
+                            ,exports
+                            ,@(if (null? imports) '() `((import ,@imports)))
+                            ,@body)))
+        (set! module-bodies (cons (cons name body) module-bodies))))))
 
+;; topological sort of libraries according to dependencies based on
+;; https://en.wikipedia.org/wiki/Topological_sorting#Algorithms
+(define no-dependency '())
+
+(let loop ((libraries libraries))
+  (unless (null? libraries)
+    (let ((library (car libraries)))
+      (if (ref dependencies (car library))
+          (loop (cdr libraries))
+          (begin (set! no-dependency (cons (car library) no-dependency))
+                 (loop (cdr libraries)))))))
+
+(pk 'no-dependency no-dependency)
+
+(define order (let loop0 ((no-dependency no-dependency)
+                        (out '()))
+              (pk 'no-dependency no-dependency)
+              (if (null? no-dependency)
+                  (reverse out)
+                  (let ((dependency (car no-dependency)))
+                    (set! no-dependency (cdr no-dependency))
+                    (let loop1 ((used-by (filter (lambda (x) (equal? (cdr x) dependency)) dependencies)))
+                      (unless (null? used-by)
+                        (set! dependencies (remove (car used-by) dependencies))
+                        (unless (ref dependencies (caar used-by))
+                          (set! no-dependency (cons (caar used-by) no-dependency)))
+                        (loop1 (cdr used-by))))
+                    (loop0 no-dependency (cons dependency out))))))
 
 (let loop ((libraries libraries))
   (unless (null? libraries)
@@ -113,8 +153,6 @@
     (loop (cdr libraries))))
 
 (pk (expand (pk `(begin
-                   ,@module-bodies
-
-                   ,@(map (lambda (x) `(import ,(ref library-module-names (car x)))) libraries)
-
+                   ,@(map (lambda (x) (ref module-bodies x)) order)
+                   ,@(map (lambda (x) `(import ,(ref library-module-names x))) imports)
                    ,@program))))
