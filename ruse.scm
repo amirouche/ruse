@@ -195,7 +195,7 @@
 
   ;;; user value primitives that perform allocation
 (define user-alloc-value-prims
-  '((call/cc . 1) (pk . 1) (call/cc . 1) (times . 2) (add . 2) (cons . 2) (make-vector . 1) (box . 1)))
+  '((void . 0) ($primitive . 2) (call/cc . 1) (pk . 1) (call/cc . 1) (times . 2) (add . 2) (cons . 2) (make-vector . 1) (box . 1)))
 
   ;;; user value primitives that do not perform allocation
 (define user-non-alloc-value-prims
@@ -407,8 +407,8 @@
         (quote d)
         (values e* ...)
         (define x e)
-        (foreign-procedure x)
-        (foreign-callable e0)
+        (javascript-procedure x)
+        (javascript-callable e0)
         (call-with-values e0 e1)
         (if e0 e1)
         (if e0 e1 e2)
@@ -419,6 +419,7 @@
         (lambda (x* ...) body* ... body)
         (let ([x* e*] ...) body* ... body)
         (letrec ([x* e*] ...) body* ... body)
+        (letrec* ([x* e*] ...) body* ... body)
         (set! x e)
         (e e* ...)))
 
@@ -527,26 +528,6 @@
   (Expr (e body)
         (- (let ([x* e*] ...) body))))
 
-  ;;;;;;;;;
-  ;;; beginning of our pass listings
-
-  ;;; pass: parse-and-rename : S-expression -> Lsrc (or error)
-  ;;;
-  ;;; parses an S-expression, and, if it conforms to the input language,
-  ;;; renames the local variables to be represented with a unique variable.
-  ;;; This helps us to separate keywords from varialbes and recognize one
-  ;;; variable binding as different from another.  This step is also called
-  ;;; alpha-renaming or alpha-conversion.  The output will be in the Lsrc
-  ;;; language forms, represented as records.
-  ;;;
-  ;;; Some design decisions here:  We could have decided to have this pass
-  ;;; remove one-armed ifs, remove and, or, and not, setup begins in the body
-  ;;; of our letrec, let, and lambda, and potentially quoted constants and
-  ;;; eta-expanded raw primitives, rather than doing each of these as separate
-  ;;; passes.  I have not done this here, primarily for educational reasons,
-  ;;; since these simple passes are a gentle introduction to how the passes are
-  ;;; written.
-  ;;;
 (define-pass parse-and-rename : * (e) -> Lsrc ()
     ;;; Helper functions for this pass.
   (definitions
@@ -687,10 +668,10 @@
                                              (process-bindings #f env (list (list x e))
                                                                (lambda (env x* e*)
                                                                  `(define ,(car x*) ,(car e*))))))
-                             (cons 'foreign-procedure (lambda (env x)
-                                                        `(foreign-procedure ,x)))
-                             (cons 'foreign-callable (lambda (env e)
-                                                        `(foreign-callable ,(Expr e env))))
+                             (cons 'javascript-procedure (lambda (env x)
+                                                        `(javascript-procedure ,x)))
+                             (cons 'javascript-callable (lambda (env e)
+                                                        `(javascript-callable ,(Expr e env))))
                              (cons 'call-with-values (lambda (env producer consumer)
                                                        `(call-with-values ,(Expr producer env)
                                                           ,(Expr consumer env))))
@@ -714,6 +695,15 @@
                                                                                (lambda (body* body)
                                                                                  `(letrec ([,x* ,e*] ...)
                                                                                     ,body* ... ,body)))))))
+
+                             (cons 'letrec* (lambda (env bindings . body*)
+                                             (process-bindings #t env bindings
+                                                               (lambda (env x* e*)
+                                                                 (process-body 'letrec env body*
+                                                                               (lambda (body* body)
+                                                                                 `(letrec ([,x* ,e*] ...)
+                                                                                    ,body* ... ,body)))))))
+
                              (cons 'set! (lambda (env x e)
                                            (cond
                                             [(assq x env) =>
@@ -747,6 +737,21 @@
                 (if (procedure? v)
                     (apply v env (cdr e))
                     (App e env))))]
+           [(and (list? e) (pair? (car e)) (eq? (caar e) '$primitive))
+            (cond
+             [(eq? (caddar e) '$set-top-level-value!)
+              (apply (cdr (assq 'set! env)) env (list (cadadr e) (caddr e)))]
+             [(eq? (caddar e) 'eq?)
+              (apply (cdr (assq 'eq? env)) env (cdr e))]
+             [(eq? (caddar e) 'call/cc)
+              (apply (cdr (assq 'call/cc env)) env (cdr e))]
+             [(eq? (caddar e) 'call-with-values)
+              (apply (cdr (assq 'call-with-values env)) env (cdr e))]
+             [(eq? (caddar e) 'values)
+              (apply (cdr (assq 'values env)) env (cdr e))]
+             [(eq? (caddar e) 'void)
+              (App '(void) env)]
+             [else (error 'ruse "parse-and-rename" e)])]
            [else (App e env)])]
          [(symbol? e)
           (cond
@@ -986,8 +991,9 @@
 
         [(set! ,x ,[e])
          `(lambda (k)
-            (set! ,x ,e)
-            (k (void)))]
+            (,e (lambda (v)
+                  (set! ,x (lambda (k) (k v)))
+                  (k (void)))))]
 
         ;; if branch
         [(if ,[e0] ,[e1] ,[e2])
@@ -1008,14 +1014,14 @@
         ;;      (lambda ()
         ;;        (k ,e* ....)))]
 
-        [(foreign-procedure ,x)
+        [(javascript-procedure ,x)
          (let ((args (make-tmp)))
            `(lambda (k)
               (k (lambda ,args
                    (let k (shift ,args))
                    (k (apply2 ,x ,args))))))]
 
-        [(foreign-callable ,[e0])
+        [(javascript-callable ,[e0])
          (let ((args (make-tmp)))
            `(lambda (k)
               (k (lambda ,args
@@ -1222,19 +1228,185 @@
 
 (define filepath (caddr (command-line)))
 
-(define program (call-with-input-file filepath read))
+(define make-module-name (lambda () (unique-var 'm)))
 
-;; (define (flatten-begin exp)
-;;   (let loop ((exp exp)
-;;              (out '()))
-;;     (if (null? exp)
-;;         out
-;;         (begin
-;;           (if (and (pair? (car exp)) (eq? (caar exp) 'begin))
-;;               (loop (cdr exp) (append out (flatten-begin (cdar exp))))
-;;               (loop (cdr exp) (append out (list (car exp)))))))))
+(define (read-file filepath)
+  (call-with-input-file filepath
+    (lambda (port)
+      (let loop ((current (read port))
+                 (out '()))
+        (if (eof-object? current)
+            (reverse out)
+            (loop (read port) (cons current out)))))))
 
-(define compiled (my-tiny-compile program))
+(define (read-library filepath)
+  (car (read-file filepath)))
+
+(define (program-body+imports program)
+  (let loop ((program program)
+             (imports '()))
+    (cond
+     ((null? program)
+      (error 'packer "program body is empty"))
+     ((and (pair? (car program))
+           (eq? (caar program) 'import))
+      (loop (cdr program) (append (cdar program) imports)))
+     (else (values program imports)))))
+
+(define (explode definition)
+  (let loop ((body (cddr definition))
+             (exports '())
+             (imports '()))
+    (cond
+     ((null? body) (values exports imports '()))
+     ((and (pair? (car body)) (eq? (caar body) 'begin))
+      (values exports imports (cdar body)))
+     ((and (pair? (car body)) (eq? (caar body) 'export))
+      (loop (cdr body) (append (cdar body) exports) imports))
+     ((and (pair? (car body)) (eq? (caar body) 'import))
+      (loop (cdr body) exports (append (cdar body) imports)))
+     (else (error 'packer "error during library parsing" (cadr definition))))))
+
+(define program (read-file filepath))
+
+(define-values (program imports) (program-body+imports program))
+
+(define libraries '())
+(define program-dependencies '())
+
+(define string-join
+  (lambda (str* jstr)
+    (cond
+     [(null? str*) ""]
+     [(null? (cdr str*)) (car str*)]
+     [else (string-append (car str*) jstr (string-join (cdr str*) jstr))])))
+
+(define (library-name->filepath name)
+  (string-append (string-join (map symbol->string name) "/") ".scm"))
+
+(define (ref alist v)
+  (let loop ((alist alist))
+    (if (null? alist)
+        #f
+        (if (equal? (caar alist) v)
+            (cdar alist)
+            (loop (cdr alist))))))
+
+(define library-module-names '())
+(define dependencies '())
+
+
+;; read all required libraries
+(let loop ((imports imports))
+  (unless (null? imports)
+    ;; deduplicate libraries
+    (if (ref libraries (car imports))
+        (loop (cdr imports))
+        (let ((library (read-library (library-name->filepath (car imports)))))
+          (set! libraries (cons (cons (car imports) library) libraries))
+          (set! library-module-names (cons (cons (car imports) (make-module-name))
+                                           library-module-names))
+          (call-with-values (lambda () (explode library))
+            (lambda (exports depends body)
+              (let loop ((depends depends))
+                (unless (null? depends)
+                  (set! dependencies (cons (cons (car imports) (car depends))
+                                           dependencies))
+                  (loop (cdr depends))))
+              (loop (append (cdr imports) depends))))))))
+
+(define module-bodies '())
+
+(define (process name module-name definition)
+  (assert (equal? (cadr definition) name))
+  (call-with-values (lambda () (explode definition))
+    (lambda (exports imports body)
+      (let* ((imports (map (lambda (x) (ref library-module-names x)) imports))
+             (body `(module ,module-name
+                            ,exports
+                            ,@(if (null? imports) '() `((import ,@imports)))
+                            ,@body)))
+        (set! module-bodies (cons (cons name body) module-bodies))))))
+
+;; topological sort of libraries according to dependencies based on
+;; https://en.wikipedia.org/wiki/Topological_sorting#Algorithms
+(define no-dependency '())
+
+(let loop ((libraries libraries))
+  (unless (null? libraries)
+    (let ((library (car libraries)))
+      (if (ref dependencies (car library))
+          (loop (cdr libraries))
+          (begin (set! no-dependency (cons (car library) no-dependency))
+                 (loop (cdr libraries)))))))
+
+(define order (let loop0 ((no-dependency no-dependency)
+                        (out '()))
+              (if (null? no-dependency)
+                  (reverse out)
+                  (let ((dependency (car no-dependency)))
+                    (set! no-dependency (cdr no-dependency))
+                    (let loop1 ((used-by (filter (lambda (x) (equal? (cdr x) dependency)) dependencies)))
+                      (unless (null? used-by)
+                        (set! dependencies (remove (car used-by) dependencies))
+                        (unless (ref dependencies (caar used-by))
+                          (set! no-dependency (cons (caar used-by) no-dependency)))
+                        (loop1 (cdr used-by))))
+                    (loop0 no-dependency (cons dependency out))))))
+
+(let loop ((libraries libraries))
+  (unless (null? libraries)
+    (process (caar libraries)
+             (ref library-module-names (caar libraries))
+             (cdar libraries))
+    (loop (cdr libraries))))
+
+(define expanded
+   (expand `(begin
+              ,@(map (lambda (x) (ref module-bodies x)) order)
+              ,@(map (lambda (x) `(import ,(ref library-module-names x))) imports)
+              ,@program)))
+
+(define (extract bindings)
+  (let loop ((bindings bindings)
+             (out '()))
+    (if (null? bindings)
+        out
+        (let ((binding (car bindings)))
+          (cond
+           ((and (pair? (cadr binding))
+                 (eq? (caadr binding) 'set!))
+            (loop (cdr bindings) (cons (cadadr binding) out)))
+           ((and (pair? (cadr binding))
+                 (eq? (caddr (caadr binding)) '$set-top-level-value!))
+            (loop (cdr bindings) (cons (cadr (cadadr binding)) out)))
+           (else (loop (cdr bindings) out)))))))
+
+(define (toplevel-hoisting exp)
+  (if (not (and (pair? exp) (eq? (car exp) 'begin)))
+      exp
+      (let loop ((body (cdr exp))
+                 (out '())
+                 (toplevel '()))
+        (cond
+         ((null? body)
+          `(let ,(map (lambda (x) `(,x (void))) toplevel)
+             ,@(reverse out)))
+         ((not (pair? (car body)))
+          (loop '() (append (reverse body) out) toplevel))
+         ((eq? (caar body) 'letrec*)
+          (loop (cdr body)
+                (cons (car body) out)
+                (append (extract (cadar body)) toplevel)))
+         ((eq? (caar body) 'set!)
+          (loop (cdr body)
+                (cons (car body) out)
+                (cons (cadar body) toplevel)))
+         (else (loop '() (append (reverse body) out) toplevel))))))
+
+(define cool (toplevel-hoisting expanded))
+
+(define compiled (my-tiny-compile cool))
 
 (cond
  ((string=? target "javascript")

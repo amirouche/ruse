@@ -1,2 +1,2 @@
-(let ((frob (foreign-procedure frob)))
+(let ((frob (javascript-procedure frob)))
   (frob "hello" " " "world"))

@@ -4,6 +4,7 @@ function voidf(k) {
 
 function pk() {
   console.log.apply(console, arguments);
+  return arguments[arguments.length - 1];
 }
 
 function trampoline(thunk) {
@@ -36,7 +37,7 @@ function returnk(k) {
 
 function wrap(v) {
   return function(k) {
-    return v;
+    return k(v);
   };
 }
 
@@ -67,70 +68,61 @@ function frob2(func) {
   return out;
 }
 
+let EMPTY_LIST = function() {
+  return "EMPTY LIST";
+};
+
 let program = function(k) {
   return (function(k) {
-    return k(function(k, frob2_1, v_0) {
+    return k(function(k, example3_3, example2_2) {
       return (function(k) {
         return (function(k) {
-          return k(function(k, t_6) {
-            return v_0(k);
-          });
-        })(function(v0) {
-          return (function(k) {
+          return k(function(k, t_8) {
             return (function(k) {
-              return frob2_1(function(v0) {
+              return (function(k) {
+                return k(function(k, t_9) {
+                  return (function(k) {
+                    return example3_3(function(v0) {
+                      return k(pk(v0));
+                    });
+                  })(k);
+                });
+              })(function(v0) {
                 return (function(k) {
-                  return k(function() {
-                    let t_7 = Array.prototype.slice.call(arguments);
-                    t_7 = t_7.map(wrap);
-                    prepend(returnk, t_7);
-                    return trampoline(
-                      apply(
-                        (function(k) {
-                          return k(function(k, a_2, b_3) {
-                            return (function(k) {
-                              return (function(k) {
-                                return k(function(k, t_4) {
-                                  return (function(k) {
-                                    return (function(k) {
-                                      return k(function(k, t_5) {
-                                        return (function(k) {
-                                          return k(1337);
-                                        })(k);
-                                      });
-                                    })(function(v0) {
-                                      return (function(k) {
-                                        v_0 = b_3;
-                                        return k(voidf);
-                                      })(function(v) {
-                                        return function() {
-                                          return v0(k, function(k) {
-                                            return k(v);
-                                          });
-                                        };
-                                      });
-                                    });
-                                  })(k);
-                                });
-                              })(function(v0) {
-                                return (function(k) {
-                                  return a_2(function(v0) {
-                                    return k(pk(v0));
-                                  });
-                                })(function(v) {
-                                  return function() {
-                                    return v0(k, function(k) {
-                                      return k(v);
-                                    });
-                                  };
-                                });
-                              });
-                            })(k);
+                  return (function(k) {
+                    return k(function(k, ignore_5) {
+                      return (function(k) {
+                        return (function(k) {
+                          return k(function(k, t_7) {
+                            return voidf(k);
                           });
-                        })(returnk),
-                        t_7
-                      )
-                    );
+                        })(function(v0) {
+                          return (function(k) {
+                            ignore_5 = function(k) {
+                              example3_3 = function(k) {
+                                return k(1337);
+                              };
+                              return k(voidf);
+                            };
+                            return k(voidf);
+                          })(function(v) {
+                            return function() {
+                              return v0(k, function(k) {
+                                return k(v);
+                              });
+                            };
+                          });
+                        });
+                      })(k);
+                    });
+                  })(function(v0) {
+                    return voidf(function(v) {
+                      return function() {
+                        return v0(k, function(k) {
+                          return k(v);
+                        });
+                      };
+                    });
                   });
                 })(function(v) {
                   return function() {
@@ -140,8 +132,44 @@ let program = function(k) {
                   };
                 });
               });
+            })(k);
+          });
+        })(function(v0) {
+          return (function(k) {
+            return (function(k) {
+              return k(function(k, ignore_4) {
+                return (function(k) {
+                  return (function(k) {
+                    return k(function(k, t_6) {
+                      return voidf(k);
+                    });
+                  })(function(v0) {
+                    return (function(k) {
+                      ignore_4 = function(k) {
+                        example2_2 = function(k) {
+                          return k(42);
+                        };
+                        return k(voidf);
+                      };
+                      return k(voidf);
+                    })(function(v) {
+                      return function() {
+                        return v0(k, function(k) {
+                          return k(v);
+                        });
+                      };
+                    });
+                  });
+                })(k);
+              });
             })(function(v0) {
-              return k(pk(v0));
+              return voidf(function(v) {
+                return function() {
+                  return v0(k, function(k) {
+                    return k(v);
+                  });
+                };
+              });
             });
           })(function(v) {
             return function() {
@@ -154,21 +182,13 @@ let program = function(k) {
       })(k);
     });
   })(function(v0) {
-    return (function(k) {
-      return k(function() {
-        let t_8 = Array.prototype.slice.call(arguments);
-        let k = shift(t_8);
-        return k(apply2(frob2, t_8));
-      });
-    })(function(t_9) {
-      return (function(k) {
-        return k(1);
-      })(function(v) {
+    return voidf(function(t_10) {
+      return voidf(function(v) {
         return function() {
           return v0(
             k,
             function(k) {
-              return k(t_9);
+              return k(t_10);
             },
             function(k) {
               return k(v);
