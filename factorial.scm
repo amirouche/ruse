@@ -2,4 +2,4 @@
                       (if (eq? n 0)
                           total
                           (factorial (add n -1) (times n total))))))
-  (factorial 1000000))
+  (factorial 1000000 1))
