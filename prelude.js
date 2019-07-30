@@ -41,6 +41,7 @@ function apply2(func, args) {
     return func.apply(undefined, args);
 }
 
+/* primitives */
 
 function add(a, b) {
     return a + b;
@@ -49,6 +50,8 @@ function add(a, b) {
 function times(a, b) {
     return a * b;
 }
+
+/* testing javascript-procedure and javascript-callable */
 
 function frob(a, b, c) {
     return a + b + c;
@@ -59,7 +62,22 @@ function frob2(func) {
     return out;
 }
 
+/* others */
 
-let EMPTY_LIST = function() { return "EMPTY LIST"; };
+let EMPTY_LIST = {type: 'empty list'};
+
+/* symbols */
+
+let SYMBOLS = {};
+
+function ruse_symbol_get_or_create(string) {
+
+    let out = SYMBOLS[string];
+    if (out === undefined) {
+        out = {type: "symbol", value: string};
+        SYMBOLS[string] = out;
+    }
+    return out;
+}
 
 let program =

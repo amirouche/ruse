@@ -1,0 +1,1 @@
+output { type: 'symbol', value: 'hello-world' }

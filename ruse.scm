@@ -303,7 +303,7 @@
   ;;; determine if we have a constant: #t, #f, '(), or 61-bit signed integer.
 (define constant?
   (lambda (x)
-    (or (string? x) (target-fixnum? x) (boolean? x) (null? x))))
+    (or (symbol? x) (string? x) (number? x) (boolean? x) (null? x))))
 
   ;;; determine if we have a valid datum (a constant, a pair of datum, or a
   ;;; vector of datum)
@@ -785,7 +785,6 @@
                               [else
                                (loop (cdr e0*) (cons (car e0*) out))])))]))
 
-
   ;;; pass: remove-one-armed-if : Lsrc -> L1
   ;;;
   ;;; this pass replaces the (if e0 e1) form with an if that will explicitly
@@ -989,6 +988,17 @@
   cps-trampoline : L6 (e) -> L6 ()
   (Expr : Expr (e) -> Expr ()
 
+        [(quote ,d)
+         (unless (constant? d)
+           (error 'ruse "cps-trampoline doesn't support complex datum, yet!" d))
+         (cond
+          ((or (number? d) (string? d))
+           `(lambda (k) (k ,d)))
+          ((symbol? d)
+           `(lambda (k)
+              (k (ruse-symbol-get-or-create ,(symbol->string d)))))
+          (else (error 'ruse "oops")))]
+
         [(set! ,x ,[e])
          `(lambda (k)
             (,e (lambda (v)
@@ -1085,7 +1095,7 @@
                             `(,(car e*)
                               (lambda (,tmp) ,(f (cdr e*) (append v* (list tmp)))))))))))]
 
-        [(quote ,d) `(lambda (k) (k ,d))]))
+        ))
 
 ;; the definition of our compiler that pulls in all of our passes and runs
 ;; them in sequence checking to sexe if the programmer wants them traced.
