@@ -1073,6 +1073,8 @@
 
         ;; XXX: workaround (void)
         [(,pr)
+         (unless (eq? pr 'void)
+           (error 'ruse "oops"))
          `(,pr)]
 
         ;; lambda application zero arguments
