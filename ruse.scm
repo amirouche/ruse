@@ -1014,6 +1014,7 @@
                    (,e1 k)
                    (,e2 k)))))]
 
+        ;; TODO: FIXME: prolly broken, need unwrap e*
         [(lambda () (values ,[e*] ...))
          `(lambda (k)
             (lambda () (k ,e* ...)))]
