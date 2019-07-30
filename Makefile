@@ -16,19 +16,19 @@ check:  submodules nodejs ## run the tests
 	@echo "\033[36mwin\033[0m"
 
 run: ## compile `in.scm` to javascript to `out.js`
-	./env.sh scheme --script ruse.scm javascript in.scm > program.js
+	./env.sh scheme --script rusec.scm javascript in.scm > program.js
 	cat prelude.js program.js postlude.js > out.js
 	nodejs out.js
 
 debug: ## debug output
-	./env.sh scheme --script ruse.scm javascript in.scm
+	./env.sh scheme --script rusec.scm javascript in.scm
 
 scheme: ## show the translation to scheme
-	./env.sh scheme --script ruse.scm scheme in.scm
+	./env.sh scheme --script rusec.scm scheme in.scm
 
 javascript: ## show javascript
 	whereis prettier # npm install -g prettier
-	./env.sh scheme --script ruse.scm javascript in.scm > program.js
+	./env.sh scheme --script rusec.scm javascript in.scm > program.js
 	cat prelude.js program.js postlude.js > out.js
 	prettier out.js > out.pretty.js
 
