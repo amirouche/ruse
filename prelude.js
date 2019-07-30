@@ -66,6 +66,10 @@ function frob2(func) {
 
 let EMPTY_LIST = {type: 'empty list'};
 
+function assume(v, message) {
+    console.assert(v, message);
+}
+
 /* symbols */
 
 let SYMBOLS = {};
@@ -74,10 +78,36 @@ function ruse_symbol_get_or_create(string) {
 
     let out = SYMBOLS[string];
     if (out === undefined) {
-        out = {type: "symbol", value: string};
+        out = {$type: "symbol", $value: string};
         SYMBOLS[string] = out;
     }
     return out;
 }
+
+/* define-record-type helpers */
+
+function ruse_make_record_type(name) {
+    let tags = shift(arguments);
+    let fields = {};
+    for(let k in tags){
+        fields[tags[k]] = k;
+    }
+    return {$type: "record", $subtype: name, fields: fields};
+}
+
+function ruse_record_predicate(record, name) {
+    return record.$subtype == name;
+}
+
+
+function ruse_record_set_field(record, name, value) {
+    record[name] = value;
+}
+
+function ruse_record_ref_field(record, name) {
+    return record[name];
+}
+
+/* program */
 
 let program =
