@@ -1,7 +1,9 @@
 (define-library (scheme base)
 
   (export assume)
-  (export null? cons pair? car cdr set-car! set-cdr! cons* list)
+  (export null? cons pair? car cdr set-car! set-cdr!
+          ;; cons* list
+          )
 
   (begin
 
@@ -44,21 +46,19 @@
       (car car set-car!)
       (cdr cdr set-cdr!))
 
-    (define cons*
-      (lambda (a . rest)
-        (let loop ((args (cons a rest))
-                   (out '()))
-          (if (and (pair? args) (null? (cdr args)))
-              (let loop ((reversed out)
-                         (out (car args)))
-                (if (null? reversed)
-                    out
-                    (loop (cdr reversed) (cons (car reversed) out))))
-              (loop (cdr args) (cons (car args) out))))))
+    ;; (define cons*
+    ;;   (lambda (a . rest)
+    ;;     (let loop ((args (cons a rest))
+    ;;                (out '()))
+    ;;       (if (and (pair? args) (null? (cdr args)))
+    ;;           (let loop ((reversed out)
+    ;;                      (out (car args)))
+    ;;             (if (null? reversed)
+    ;;                 out
+    ;;                 (loop (cdr reversed) (cons (car reversed) out))))
+    ;;           (loop (cdr args) (cons (car args) out))))))
 
-    (define (list a . args)
-      (cons a args))
-
-    (define list* cons*)
+    ;; (define (list a . args)
+    ;;   (cons a args))
 
     ))
