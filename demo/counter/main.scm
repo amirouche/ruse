@@ -44,9 +44,9 @@
   (define (view model mc)
     (list 'div
           (list '@ (cons "id" "box"))
-          "count === "
+          "(= count "
           model
-          " "
+          ") "
           (list 'button (list '@ (cons "onClick" (mc onClick)))
                 "increment")))
 

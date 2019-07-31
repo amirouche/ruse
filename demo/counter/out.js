@@ -423,7 +423,7 @@ let program = function(k) {
                                                                                         k
                                                                                       ) {
                                                                                         return k(
-                                                                                          "count === "
+                                                                                          "(= count "
                                                                                         );
                                                                                       })(
                                                                                         function(
@@ -437,7 +437,7 @@ let program = function(k) {
                                                                                                 k
                                                                                               ) {
                                                                                                 return k(
-                                                                                                  " "
+                                                                                                  ") "
                                                                                                 );
                                                                                               })(
                                                                                                 function(
