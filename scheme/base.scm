@@ -1,11 +1,13 @@
 (define-library (scheme base)
 
   (export assume)
-  (export cons pair? car cdr set-car! set-cdr!)
+  (export null? cons pair? car cdr set-car! set-cdr! cons* list)
 
   (begin
 
     (define assume (javascript-procedure assume))
+
+    (define null? (javascript-procedure nullp))
 
     (define ruse-make-record-type (javascript-procedure ruse_make_record_type))
 
@@ -41,5 +43,22 @@
       pair?
       (car car set-car!)
       (cdr cdr set-cdr!))
+
+    (define cons*
+      (lambda (a . rest)
+        (let loop ((args (cons a rest))
+                   (out '()))
+          (if (and (pair? args) (null? (cdr args)))
+              (let loop ((reversed out)
+                         (out (car args)))
+                (if (null? reversed)
+                    out
+                    (loop (cdr reversed) (cons (car reversed) out))))
+              (loop (cdr args) (cons (car args) out))))))
+
+    (define (list a . args)
+      (cons a args))
+
+    (define list* cons*)
 
     ))
