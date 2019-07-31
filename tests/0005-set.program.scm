@@ -1,1 +1,1 @@
-(let ((abc 0)) (set! abc 42))
+(let ((abc 0)) (set! abc 42) abc)

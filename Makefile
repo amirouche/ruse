@@ -18,6 +18,7 @@ check:  submodules nodejs ## run the tests
 	@echo "\033[36mwin\033[0m"
 
 run: ## compile `in.scm` to javascript to `out.js`
+	which scheme
 	./env.sh scheme --script rusec.scm javascript in.scm > program.js
 	cat prelude.js program.js postlude.js > out.js
 	nodejs out.js

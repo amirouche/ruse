@@ -1,3 +1,5 @@
+(import (tests))
+
 (begin
   (pk 0)
   (begin
