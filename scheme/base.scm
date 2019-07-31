@@ -2,7 +2,7 @@
 
   (export assume)
   (export null? cons pair? car cdr set-car! set-cdr!
-          ;; cons* list
+          list
           )
 
   (begin
@@ -46,6 +46,8 @@
       (car car set-car!)
       (cdr cdr set-cdr!))
 
+    (define list (lambda args args))
+
     ;; (define cons*
     ;;   (lambda (a . rest)
     ;;     (let loop ((args (cons a rest))
@@ -57,8 +59,5 @@
     ;;                 out
     ;;                 (loop (cdr reversed) (cons (car reversed) out))))
     ;;           (loop (cdr args) (cons (car args) out))))))
-
-    ;; (define (list a . args)
-    ;;   (cons a args))
 
     ))

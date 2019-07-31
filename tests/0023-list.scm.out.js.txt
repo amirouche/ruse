@@ -1,0 +1,2 @@
+output { type: { type: 'record', subtype: '<cons>', fields: { car: 0, cdr: 1 } },
+  fields: [ 1, { type: [Object], fields: [Array] } ] }

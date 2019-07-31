@@ -280,6 +280,7 @@
         (not e)
         (begin e* ... e)
         (lambda (x* ...) body* ... body)
+        (lambda-variadic x body* ... body)
         (let ([x* e*] ...) body* ... body)
         (letrec ([x* e*] ...) body* ... body)
         (letrec* ([x* e*] ...) body* ... body)
@@ -539,12 +540,19 @@
                                                        `(call-with-values ,(Expr producer env)
                                                           ,(Expr consumer env))))
                              (cons 'lambda (lambda (env fmls . body*)
-                                             (unique-vars env fmls
-                                                          (lambda (env fmls)
-                                                            (process-body 'lambda env body*
-                                                                          (lambda (body* body)
-                                                                            `(lambda (,fmls ...)
-                                                                               ,body* ... ,body)))))))
+                                             (if (symbol? fmls)
+                                                 (unique-vars env (list fmls)
+                                                              (lambda (env fmls)
+                                                                (process-body 'lambda-variadic env body*
+                                                                              (lambda (body* body)
+                                                                                `(lambda-variadic ,(car fmls)
+                                                                                                  ,body* ... ,body)))))
+                                                 (unique-vars env fmls
+                                                              (lambda (env fmls)
+                                                                (process-body 'lambda env body*
+                                                                              (lambda (body* body)
+                                                                                `(lambda (,fmls ...)
+                                                                                   ,body* ... ,body))))))))
                              (cons 'let (lambda (env bindings . body*)
                                           (process-bindings #f env bindings
                                                             (lambda (env x* e*)
@@ -757,7 +765,10 @@
         [(letrec ([,x* ,[e*]] ...) ,[body*] ... ,[body])
          `(letrec ([,x* ,e*] ...) ,(build-begin body* body))]
         [(lambda (,x* ...) ,[body*] ... ,[body])
-         `(lambda (,x* ...) ,(build-begin body* body))]))
+         `(lambda (,x* ...) ,(build-begin body* body))]
+        [(lambda-variadic ,x ,[body*] ... ,[body])
+         `(lambda-variadic ,x ,(build-begin body* body))]))
+
 
 ;; a little helper mostly shamelesly stolen from
 ;; the Chez Scheme User's Guide
@@ -910,6 +921,21 @@
          `(lambda (k)
             (k (lambda (k ,x* ...)
                  (,body k))))]
+
+        ;; lambda creation
+        [(lambda (,x* ...) ,[body])
+         `(lambda (k)
+            (k (lambda (k ,x* ...)
+                 (,body k))))]
+
+        [(lambda-variadic ,x ,[body])
+         (let ((args (make-tmp)))
+           `(lambda (k)
+              (k (lambda (k)
+                   ;; convert javascript `arguments` into x formal
+                   (set! ,x (ruse_arguments_to_list arguments))
+                   (,body k)))))]
+
 
         ;; call-with-values
         [(call-with-values ,[e0] ,[e1])

@@ -86,9 +86,36 @@ function ruse_symbol_get_or_create(string) {
     return out;
 }
 
+/* list */
+
+ruse_cons_record = {
+    type: "record",
+    subtype: "<cons>",
+    fields: {car: 0, cdr: 1},
+}
+
+ruse_cons = ruse_record_constructor(ruse_cons_record);
+
+function ruse_arguments_to_list(args) {
+    args = Array.prototype.slice.call(args);
+    args.shift();
+    args.reverse();
+    let out = EMPTY_LIST;
+    for(k in args) {
+        out = wrap(out);
+        out = ruse_cons(returnk, args[k], out);
+    }
+
+    return wrap(out);
+}
+
 /* define-record-type helpers */
 
 function ruse_make_record_type(name) {
+    if (name.value == '<cons>') {
+        return ruse_cons_record;
+    }
+
     let tags = Array.prototype.slice.call(arguments);
     shift(tags);
     let fields = {};
@@ -134,6 +161,7 @@ function ruse_record_accessor(type, name) {
         return k(v);
     }
 }
+
 
 /* program */
 
