@@ -1,10 +1,5 @@
 (begin
 
-  ;; (define-syntax javascript-procedure
-  ;;   (syntax-rules ()
-  ;;     ((javascript-procedure e)
-  ;;      '(javascript-procedure e))))
-
   (define ruse-make-record-type (javascript-procedure ruse_make_record_type))
 
   (define ruse-record-constructor (javascript-procedure ruse_record_constructor))
