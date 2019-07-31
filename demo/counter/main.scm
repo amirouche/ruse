@@ -2,6 +2,7 @@
 (import (ruse))
 (import (scheme base))
 
+
 (pk "Ruse Scheme is running...")
 
 (let ((patch! (javascript-procedure patch)))
@@ -41,14 +42,12 @@
   (define (init) 0)
 
   (define (view model mc)
-    (cons 'div
-          (cons (cons '@ (cons (cons "id" "box") '()))
-                (cons "count === "
-                      (cons model (cons " " (cons
-                                             (cons 'button
-                                                   (cons (cons '@ (cons (cons "onClick" (mc onClick)) '()))
-                                                         (cons "increment" '()))) '())))))))
+    (list 'div
+          (list '@ (cons "id" "box"))
+          "count === "
+          model
+          " "
+          (list 'button (list '@ (cons "onClick" (mc onClick)))
+                "increment")))
 
   (create-app init view))
-
-;; everything that follows is dead code
