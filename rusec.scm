@@ -1,95 +1,7 @@
 ;;; Copyright (c) 2013 Andrew W. Keep
 ;;; Copyright (c) 2019 Amirouche Boubekki
 ;;;
-;;; See the accompanying file Copyright for details
-;;;
-;;; A nanopass compiler developed to use as a demo during Clojure Conj 2013.
-;;; modified to output javascript code.
-;;;
-;;; The source language for the compiler is:
-;;;
-;;; Expr      --> <Primitive>
-;;;            |  <Var>
-;;;            |  <Const>
-;;;            |  (quote <Datum>)
-;;;            |  (if <Expr> <Expr>)
-;;;            |  (if <Expr> <Expr> <Expr>)
-;;;            |  (or <Expr> ...)
-;;;            |  (and <Expr> ...)
-;;;            |  (not <Expr>)
-;;;            |  (begin <Expr> ... <Expr>)
-;;;            |  (lambda (<Var> ...) <Expr> ... <Expr>)
-;;;            |  (let ([<Var> <Expr>] ...) <Expr> ... <Expr>)
-;;;            |  (letrec ([<Var> <Expr>] ...) <Expr> ... <Expr>)
-;;;            |  (set! <Var> <Expr>)
-;;;            |  (<Expr> <Expr> ...)
-;;;
-;;; Primitive --> car | cdr | cons | pair? | null? | boolean? | make-vector
-;;;            |  vector-ref | vector-set! | vector? | vector-length | box
-;;;            |  unbox | set-box! | box? | + | - | * | / | = | < | <= | >
-;;;            |  >= | eq?
-;;; Var       --> symbol
-;;; Const     --> #t | #f | '() | integer between -2^60 and 2^60 - 1
-;;; Datum     --> <Const> | (<Datum> . <Datum>) | #(<Datum> ...)
-;;;
-;;; or in nanopass parlance:
-;;;
-;;; (define-language Lsrc
-;;;   (terminals
-;;;     (symbol (x))
-;;;     (primitive (pr))
-;;;     (constant (c))
-;;;     (datum (d)))
-;;;   (Expr (e body)
-;;;     pr
-;;;     x
-;;;     c
-;;;     (quote d)
-;;;     (if e0 e1)
-;;;     (if e0 e1 e2)
-;;;     (or e* ...)
-;;;     (and e* ...)
-;;;     (not e)
-;;;     (begin e* ... e)
-;;;     (lambda (x* ...) body* ... body)
-;;;     (let ([x* e*] ...) body* ... body)
-;;;     (letrec ([x* e*] ...) body* ... body)
-;;;     (set! x e)
-;;;     (e e* ...)))
-;;;
-;;; The following exports are defined for this library:
-;;;
-;;; (my-tiny-compile <exp>) my-tiny-compile is the main interface the
-;;;     compiler, where <exp> is a quoted expression for the compiler
-;;;     to evaluate.  This procedure will run the nanopass parts of
-;;;     the compiler, produce a javascript output file in t.js, run it
-;;;     with nodejs directing its output to t.out, and finally use the
-;;;     Scheme reader to read t.out and return the value to the host
-;;;     Scheme system.  For example, if we wanted to run a program
-;;;     that calculates the factorial of 5, we could do the following:
-;;;     (my-tiny-compile '(letrec ([f (lambda (n) (if (= n 0) 1 (* n
-;;;     (f (- n 1)))))]) (f 10)))
-;;;
-;;; (trace-passes)
-;;; (trace-passes <pass-spec>)
-;;;     trace-passes is a parameter used by my-tiny-compile to decide what
-;;;     passees should have their output printed.  When it is called without
-;;;     any arguments, it returns the list of passes to be traced.  When it
-;;;     is called with an argument, the argument should be one of the
-;;;     following:
-;;;     '<pass-name>                       - sets this pass to be traced
-;;;     '(<pass-name 0> <pass-name 1> ...) - set the list of passes to trace
-;;;     #t                                 - traces all passes
-;;;     #f                                 - turns off trace passing
-;;;
-;;; all-passes
-;;;     lists all passes in the compiler.
-;;;
-;;; Internals that are exported to make them available for programmers
-;;; experimenting with the compiler.
-;;;
-;;; TBD
-;;;
+;;; See LICENSE for details.
 ;;;
 (import (chezscheme)
         (nanopass)
@@ -101,9 +13,9 @@
   (newline (current-error-port))
   (car (reverse args)))
 
-  ;;; Helper function for representing unique variables as symbols by adding a
-  ;;; number to the variables (so if we start with f we get f.n where n might
-  ;;;  be 1, 2, 3, etc, and is unique).
+;; Helper function for representing unique variables as symbols by adding a
+;; number to the variables (so if we start with f we get f.n where n might
+;; be 1, 2, 3, etc, and is unique).
 (define unique-var
   (let ()
     (define count 0)
