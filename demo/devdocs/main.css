@@ -1,0 +1,180 @@
+@font-face {
+    font-family: 'Linux Libertine';
+    src: url('static/LinLibertine_Rah.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+* {
+    box-sizing: border-box;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+    margin: 0px;
+    line-height: 1.2em;
+}
+
+#noscript {
+    background: hsla(0, 0%, 0%, 0.9);
+    box-sizing: border-box;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px black;
+    color: #777;
+    font-family: mono, monospace;
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    text-align: center;
+    animation: border 2s 1s infinite, borderColor 2s 1s infinite;
+}
+
+#box, #loading {
+    display: none;
+    box-sizing: border-box;
+    background: hsla(0, 0%, 0%, 0.9);
+    border-radius: 5px;
+    color: #777;
+    font-family: mono, monospace;
+    margin-bottom: 10px;
+    padding: 15px;
+    text-align: center;
+}
+
+#box {
+    display: block;
+    border: 2px solid #f45e61;
+    padding: 15px;
+    text-align: left;
+}
+
+#xhr {
+    display: none;
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+}
+
+/* loading spinner, taken from https://loading.io/css/ */
+
+.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 27px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #777;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 6px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 6px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 26px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 45px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(19px, 0);
+  }
+}
+
+/* end of loading spinner */
+
+
+body {
+    background-color: black;
+    background: url("static/billy-huynh-278252-unsplash-small.jpg") fixed;
+    background-size: cover;
+    color: white;
+    margin: 0px;
+    padding: 0px;
+    font-family: 'Linux Libertine', serif;
+    line-height: 1.6em;
+    font-size: 20px;
+}
+
+a:link, a:visited, a:active {
+    color: #3498db;
+}
+
+a:hover {
+    color: #2980b9;
+}
+
+
+blockquote {
+    border: 1px solid #3498db;
+    border-left: 5px solid #3498db;
+    padding: 15px 30px;
+    text-align: justify;
+}
+
+blockquote > p {
+    font-size: 1.2em;
+}
+
+#overlay {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -99;
+    transform: translateX(-50%) translateY(-50%);
+    background: url(static/overlay-video-dark.png);
+}
+
+#container {
+    max-width: 777px;
+    margin: 100px auto;
+}
+
+
+#input {
+    background: hsla(0, 0%, 100%, 0.7);
+    border-radius: 5px;
+    border: 1px solid white;
+    box-shadow: 0px 0px 5px black;
+    color: white;
+    font-family: mono, monospace;
+    font-size: 20px;
+    padding: 5px 10px;
+    width: 100%;
+    color: black;
+}
