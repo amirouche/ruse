@@ -1374,11 +1374,13 @@
              (cdar libraries))
     (loop (cdr libraries))))
 
+(define env (copy-environment (environment '(chezscheme))))
+
 (define expanded
    (expand `(begin
               ,@(map (lambda (x) (ref module-bodies x)) order)
               ,@(map (lambda (x) `(import ,(ref library-module-names x))) imports)
-              ,@program)))
+              ,@program) env))
 
 (define (extract bindings)
   (let loop ((bindings bindings)
