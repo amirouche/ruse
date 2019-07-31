@@ -37,3 +37,6 @@ javascript: ## show javascript
 
 serve:
 	python3 -m http.server
+
+pack:
+	cat prelude.js program.js postlude.js > out.js

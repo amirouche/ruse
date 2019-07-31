@@ -1,11 +1,3 @@
-@font-face {
-    font-family: 'Linux Libertine';
-    src: url('static/LinLibertine_Rah.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
 * {
     box-sizing: border-box;
 }
@@ -42,7 +34,6 @@ p, h1, h2, h3, h4, h5, h6 {
 
 #box {
     display: block;
-    border: 2px solid #f45e61;
     padding: 15px;
     text-align: left;
 }
@@ -117,12 +108,12 @@ p, h1, h2, h3, h4, h5, h6 {
 
 body {
     background-color: black;
-    background: url("static/billy-huynh-278252-unsplash-small.jpg") fixed;
+    background: url("photo-1485965373059-f07657e9f841.jpeg") fixed;
     background-size: cover;
     color: white;
     margin: 0px;
     padding: 0px;
-    font-family: 'Linux Libertine', serif;
+    font-family: serif;
     line-height: 1.6em;
     font-size: 20px;
 }
@@ -177,4 +168,16 @@ blockquote > p {
     padding: 5px 10px;
     width: 100%;
     color: black;
+}
+
+#container {
+    text-align: center;
+}
+
+#count {
+    font-size: 3em;
+    padding: 15px;
+    background: black;
+    border-radius: 5px;
+    margin: 15px;
 }

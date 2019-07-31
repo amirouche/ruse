@@ -66,6 +66,8 @@ function frob2(func) {
 
 let EMPTY_LIST = {type: 'empty list'};
 
+let RUSE_EMPTY_LIST = function(k) { return k(EMPTY_LIST); };
+
 function assume(v, message) {
     console.assert(v, message);
 }

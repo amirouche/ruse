@@ -751,7 +751,7 @@
               (apply (cdr (assq 'values env)) env (cdr e))]
              [(eq? (caddar e) 'void)
               (App '(void) env)]
-             [else (error 'ruse "parse-and-rename" e)])]
+             [else (error 'ruse "chez primitive oops" e)])]
            [else (App e env)])]
          [(symbol? e)
           (cond
@@ -997,6 +997,8 @@
           ((symbol? d)
            `(lambda (k)
               (k (ruse-symbol-get-or-create ,(symbol->string d)))))
+          ((null? d)
+           '())
           (else (error 'ruse "oops")))]
 
         [(set! ,x ,[e])
@@ -1145,7 +1147,7 @@
 
 (define (emit x)
   (cond
-   [(null? x) "EMPTY_LIST"]
+   [(null? x) "RUSE_EMPTY_LIST"]
    [(number? x) (number->string x)]
    [(string? x) (string-append "\"" x "\"")]
    [(symbol? x) (symbol->c-id x)]
