@@ -78,7 +78,7 @@ function ruse_symbol_get_or_create(string) {
 
     let out = SYMBOLS[string];
     if (out === undefined) {
-        out = {$type: "symbol", $value: string};
+        out = {type: "symbol", value: string};
         SYMBOLS[string] = out;
     }
     return out;
@@ -87,25 +87,50 @@ function ruse_symbol_get_or_create(string) {
 /* define-record-type helpers */
 
 function ruse_make_record_type(name) {
-    let tags = shift(arguments);
+    let tags = Array.prototype.slice.call(arguments);
+    shift(tags);
     let fields = {};
-    for(let k in tags){
-        fields[tags[k]] = k;
+    for(let i in tags){
+        fields[tags[i].value] = i;
     }
-    return {$type: "record", $subtype: name, fields: fields};
+    return {type: "record", subtype: name.value, fields: fields};
 }
 
-function ruse_record_predicate(record, name) {
-    return record.$subtype == name;
+function ruse_record_constructor(type) {
+    return function (k) {
+        let args = Array.prototype.slice.call(arguments);
+        shift(args)
+        // TODO: check correct number of args
+        args = args.map(unwrap);
+        let instance = {type: type, fields: args};
+        return k(instance);
+    }
 }
 
-
-function ruse_record_set_field(record, name, value) {
-    record[name] = value;
+function ruse_record_predicate(type) {
+    return function(k, obj) {
+        obj = unwrap(obj).type
+        return k(obj === type);
+    }
 }
 
-function ruse_record_ref_field(record, name) {
-    return record[name];
+function ruse_record_modifier(type, name) {
+    let index = type.fields[name.value];
+    return function(k, instance, value) {
+        instance = unwrap(instance);
+        value = unwrap(value);
+        instance.fields[index] = value;
+        return k(voidf);
+    }
+}
+
+function ruse_record_accessor(type, name) {
+    let index = type.fields[name.value];
+    return function(k, instance) {
+        instance = unwrap(instance);
+        let v = instance.fields[index];
+        return k(v);
+    }
 }
 
 /* program */
