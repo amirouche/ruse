@@ -1,9 +1,7 @@
 (define-library (scheme base)
 
   (export assume)
-  (export null? cons pair? car cdr set-car! set-cdr!
-          list
-          )
+  (export null? cons pair? car cdr set-car! set-cdr! list)
 
   (begin
 
@@ -38,7 +36,6 @@
              (define accessor (ruse-record-accessor type 'field-tag))
              (define modifier (ruse-record-modifier type 'field-tag)))
            ...))))
-
 
     (define-record-type <cons>
       (cons car cdr)
