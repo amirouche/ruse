@@ -53,96 +53,47 @@
        (s0 (reverse (string->list (symbol->string x)))))))))
 
 
-  ;;; Convenience procedure for building temporaries in the compiler.
+;; Convenience procedure for building temporaries in the compiler.
 (define make-tmp (lambda () (unique-var 't)))
 
-  ;;; Helpers for the various sets of primitives we have over the course of the
-  ;;; compiler
-  ;;; All primitives:
-  ;;;
-  ;;;                     |       |         | Langauge   | Language |
-  ;;; primitive           | arity | context | introduced | removed  |
-  ;;; --------------------+-------+---------+------------+----------+
-  ;;; cons                |   2   |  value  |    Lsrc    |    L17   |
-  ;;; make-vector         |   1   |  value  |    Lsrc    |    L17   |
-  ;;; box                 |   1   |  value  |    Lsrc    |    L17   |
-  ;;; car                 |   1   |  value  |    Lsrc    |    L22   |
-  ;;; cdr                 |   1   |  value  |    Lsrc    |    L22   |
-  ;;; vector-ref          |   2   |  value  |    Lsrc    |    L22   |
-  ;;; vector-length       |   1   |  value  |    Lsrc    |    L22   |
-  ;;; unbox               |   1   |  value  |    Lsrc    |    L22   |
-  ;;; +                   |   2   |  value  |    Lsrc    |    L22   |
-  ;;; -                   |   2   |  value  |    Lsrc    |    L22   |
-  ;;; *                   |   2   |  value  |    Lsrc    |    L22   |
-  ;;; /                   |   2   |  value  |    Lsrc    |    L22   |
-  ;;; pair?               |   1   |  pred   |    Lsrc    |    L22   |
-  ;;; null?               |   1   |  pred   |    Lsrc    |    L22   |
-  ;;; boolean?            |   1   |  pred   |    Lsrc    |    L22   |
-  ;;; vector?             |   1   |  pred   |    Lsrc    |    L22   |
-  ;;; box?                |   1   |  pred   |    Lsrc    |    L22   |
-  ;;; =                   |   2   |  pred   |    Lsrc    |    L22   |
-  ;;; <                   |   2   |  pred   |    Lsrc    |    L22   |
-  ;;; <=                  |   2   |  pred   |    Lsrc    |    L22   |
-  ;;; >                   |   2   |  pred   |    Lsrc    |    L22   |
-  ;;; >=                  |   2   |  pred   |    Lsrc    |    L22   |
-  ;;; eq?                 |   2   |  pred   |    Lsrc    |    L22   |
-  ;;; vector-set!         |   3   |  effect |    Lsrc    |    L22   |
-  ;;; set-box!            |   2   |  effect |    Lsrc    |    L22   |
-  ;;; --------------------+-------+---------+------------+----------+
-  ;;; void                |   0   |  value  |    L1      |    L22   |
-  ;;; --------------------+-------+---------+------------+----------+
-  ;;; make-closure        |   1   |  value  |    L13     |    L17   |
-  ;;; closure-code        |   2   |  value  |    L13     |    L22   |
-  ;;; closure-ref         |   2   |  value  |    L13     |    L22   |
-  ;;; closure-code-set!   |   2   |  effect |    L13     |    L22   |
-  ;;; closure-data-set!   |   3   |  effect |    L13     |    L22   |
-  ;;; --------------------+-------+---------+------------+----------+
-  ;;; $vector-length-set! |   2   |  effect |    L17     |    L22   |
-  ;;; $set-car!           |   2   |  effect |    L17     |    L22   |
-  ;;; $set-cdr!           |   2   |  effect |    L17     |    L22   |
-  ;;;
-  ;;; This is a slightly cleaned up version, but this might still be better
-  ;;; cleaned up by adding a define-primitives form, perhaps even one that can
-  ;;; be used in the later parts of the compiler.
-
-  ;;; user value primitives that perform allocation
+;; user value primitives that perform allocation
 (define user-alloc-value-prims
   '((void . 0) ($primitive . 2) (call/cc . 1) (pk . 1) (call/cc . 1) (times . 2) (add . 2) (cons . 2) (make-vector . 1) (box . 1)))
 
-  ;;; user value primitives that do not perform allocation
+;; user value primitives that do not perform allocation
 (define user-non-alloc-value-prims
   '((car . 1) (cdr . 1) (vector-ref . 2) (vector-length . 1) (unbox . 1)
     (+ . 2) (- . 2) (* . 2) (/ . 2)))
 
-  ;;; user predicate primitives
-  ;;; TODO: add procedure?
+;; user predicate primitives
+;; TODO: add procedure?
 (define user-pred-prims
   '((pair? . 1) (null? . 1) (boolean? . 1) (vector? . 1) (box? . 1) (= . 2)
     (< . 2) (<= . 2) (> . 2) (>= . 2) (eq? . 2)))
 
-  ;;; user effect primitives
+;; user effect primitives
 (define user-effect-prims
   '((vector-set! . 3) (set-box! . 2)))
 
-  ;;; an association list with the user primitives
+;; an association list with the user primitives
 (define user-prims
   (append user-alloc-value-prims user-non-alloc-value-prims user-pred-prims
           user-effect-prims))
 
-  ;;; void primitive + non-allocation user value primitives
+;; void primitive + non-allocation user value primitives
 (define void+user-non-alloc-value-prims
   (cons '(void . 0) user-non-alloc-value-prims))
 
-  ;;; an association list with void and all the user primitives
+;; an association list with void and all the user primitives
 (define void+user-prims
   (append user-alloc-value-prims void+user-non-alloc-value-prims
           user-pred-prims user-effect-prims))
 
-  ;;; all the allocation value primitives, including make-closure primitive
+;; all the allocation value primitives, including make-closure primitive
 (define closure+user-alloc-value-prims
   (cons '(make-closure . 1) user-alloc-value-prims))
 
-  ;;; all the non-allocation value primitives, include the closure primitives
+;; all the non-allocation value primitives, include the closure primitives
 (define closure+void+user-non-alloc-value-prims
   (cons* '(closure-code . 2) '(closure-ref . 2)
          void+user-non-alloc-value-prims))
@@ -164,7 +115,7 @@
           closure+void+user-non-alloc-value-prims user-pred-prims
           closure+user-effect-prims))
 
-  ;;; various predicates for determining if a primitve is a valid prim.
+;; various predicates for determining if a primitve is a valid prim.
 (define primitive?
   (lambda (x)
     (assq x user-prims)))
@@ -203,22 +154,22 @@
   (lambda (x)
     (assq x internal+closure+user-effect-prims)))
 
-  ;;;;;;;;;;
-  ;;; Helper functions for identifying terminals in the nanopass languages.
+  ;;;;;;;
+;; Helper functions for identifying terminals in the nanopass languages.
 
-  ;;; determine if we have a 61-bit signed integer
+;; determine if we have a 61-bit signed integer
 (define target-fixnum?
   (lambda (x)
     (and (and (integer? x) (exact? x))
          (<= (- (expt 2 60)) x (- (expt 2 60) 1)))))
 
-  ;;; determine if we have a constant: #t, #f, '(), or 61-bit signed integer.
+;; determine if we have a constant: #t, #f, '(), or 61-bit signed integer.
 (define constant?
   (lambda (x)
     (or (symbol? x) (string? x) (number? x) (boolean? x) (null? x))))
 
-  ;;; determine if we have a valid datum (a constant, a pair of datum, or a
-  ;;; vector of datum)
+;; determine if we have a valid datum (a constant, a pair of datum, or a
+;; vector of datum)
 (define datum?
   (lambda (x)
     (or (constant? x)
@@ -230,15 +181,15 @@
                      (and (datum? (vector-ref x i))
                           (loop i)))))))))
 
-  ;;; determine if we have a 64-bit signed integer (used later in the compiler
-  ;;; to hold the ptr representation).
+;; determine if we have a 64-bit signed integer (used later in the compiler
+;; to hold the ptr representation).
 (define integer-64?
   (lambda (x)
     (and (and (integer? x) (exact? x))
          (<= (- (expt 2 63)) x (- (expt 2 63) 1)))))
 
-  ;;; Random helper available on most Scheme systems, but irritatingly not in
-  ;;; the R6RS standard.
+;; Random helper available on most Scheme systems, but irritatingly not in
+;; the R6RS standard.
 (define make-list
   (case-lambda
     [(n) (make-list n (if #f #f))]
@@ -247,17 +198,17 @@
                  ls
                  (loop (fx- n 1) (cons v ls))))]))
 
-  ;;;;;;;;
-  ;;; The standard (not very efficient) Scheme representation of sets as lists
+  ;;;;;;
+;; The standard (not very efficient) Scheme representation of sets as lists
 
-  ;;; add an item to a set
+;; add an item to a set
 (define set-cons
   (lambda (x set)
     (if (memq x set)
         set
         (cons x set))))
 
-  ;;; construct the intersection of 0 to n sets
+;; construct the intersection of 0 to n sets
 (define intersect
   (lambda set*
     (if (null? set*)
@@ -272,7 +223,7 @@
                                  (loop (cdr seta) fset))))))
                    (car set*) (cdr set*)))))
 
-  ;;; construct the union of 0 to n sets
+;; construct the union of 0 to n sets
 (define union
   (lambda set*
     (if (null? set*)
@@ -284,7 +235,7 @@
                            (loop (cdr setb) (set-cons (car setb) seta)))))
                    (car set*) (cdr set*)))))
 
-  ;;; construct the difference of 0 to n sets
+;; construct the difference of 0 to n sets
 (define difference
   (lambda set*
     (if (null? set*)
@@ -299,13 +250,13 @@
                                   (loop (cdr seta) (cons a final)))))))
                     (car set*) (cdr set*)))))
 
-  ;;; Language definitions for Lsrc and L1 to L22
-  ;;; Both the language extension and the fully specified language is included
-  ;;; (though the fully specified language may be out of date).  This can be
-  ;;; regenerated by doing:
-  ;;; > (import (c))
-  ;;; > (import (nanopass))
-  ;;; > (language->s-expression L10) => generates L10 definition
+;; Language definitions for Lsrc and L1 to L22
+;; Both the language extension and the fully specified language is included
+;; (though the fully specified language may be out of date).  This can be
+;; regenerated by doing:
+;; > (import (c))
+;; > (import (nanopass))
+;; > (language->s-expression L10) => generates L10 definition
 (define-language Lsrc
   (terminals
    (symbol (x))
@@ -335,7 +286,7 @@
         (set! x e)
         (e e* ...)))
 
-  ;;; Language 1: removes one-armed if and adds the void primitive
+;; Language 1: removes one-armed if and adds the void primitive
                                         ;
                                         ; (define-language L1
                                         ;   (terminals (void+primitive (pr))
@@ -366,7 +317,7 @@
   (Expr (e body)
         (- (if e0 e1))))
 
-  ;;; Language 2: removes or, and, and not forms
+;; Language 2: removes or, and, and not forms
                                         ;
                                         ; (define-language L2
                                         ;   (terminals (void+primitive (pr))
@@ -393,9 +344,9 @@
            (and e* ...)
            (not e))))
 
-  ;;; Language 3: removes multiple expressions from the body of
-  ;;; lambda, let, and letrec (to be replaced with a single begin
-  ;;; expression that contains the expressions from the body).
+;; Language 3: removes multiple expressions from the body of
+;; lambda, let, and letrec (to be replaced with a single begin
+;; expression that contains the expressions from the body).
                                         ;
                                         ; (define-language L3
                                         ;   (terminals (void+primitive (pr))
@@ -441,11 +392,11 @@
         (- (let ([x* e*] ...) body))))
 
 (define-pass parse-and-rename : * (e) -> Lsrc ()
-    ;;; Helper functions for this pass.
+  ;; Helper functions for this pass.
   (definitions
-      ;;; process-body - used to process the body of begin, let, letrec, and
-      ;;; lambda expressions.  since all four of these have the same pattern in
-      ;;; the body.
+    ;; process-body - used to process the body of begin, let, letrec, and
+    ;; lambda expressions.  since all four of these have the same pattern in
+    ;; the body.
     (define process-body
       (lambda (who env body* f)
         (when (null? body*) (error who "invalid empty body"))
@@ -454,19 +405,19 @@
               (f (reverse rbody*) (Expr body env))
               (loop (car body*) (cdr body*)
                     (cons (Expr body env) rbody*))))))
-      ;;; vars-unique? - processes the list of bindings to make sure all of the
-      ;;; variable names are different (i.e. we don't want to allow
-      ;;; (lambda (x x) x), since we would not know which x is which).
+    ;; vars-unique? - processes the list of bindings to make sure all of the
+    ;; variable names are different (i.e. we don't want to allow
+    ;; (lambda (x x) x), since we would not know which x is which).
     (define vars-unique?
       (lambda (fmls)
         (let loop ([fmls fmls])
           (or (null? fmls)
               (and (not (memq (car fmls) (cdr fmls)))
                    (loop (cdr fmls)))))))
-      ;;; unique-vars - builds a list of unique variables based on a set of
-      ;;; formals and extends the environment.  it takes a function as an
-      ;;; argument (effectively a continuation), and passes it the updated
-      ;;; environment and a list of unique variables.
+    ;; unique-vars - builds a list of unique variables based on a set of
+    ;; formals and extends the environment.  it takes a function as an
+    ;; argument (effectively a continuation), and passes it the updated
+    ;; environment and a list of unique variables.
     (define unique-vars
       (lambda (env fmls f)
         (unless (vars-unique? fmls)
@@ -477,11 +428,11 @@
               (let* ([fml (car fmls)] [ufml (unique-var fml)])
                 (loop (cdr fmls) (cons (cons fml ufml) env)
                       (cons ufml rufmls)))))))
-      ;;; process-bindings - processes the bindings of a let or letrec and
-      ;;; produces bindings for unique variables for each of the original
-      ;;; variables.  it also processes the right-hand sides of the variable
-      ;;; bindings and selects either the original environment (for let) or the
-      ;;; updated environment (for letrec).
+    ;; process-bindings - processes the bindings of a let or letrec and
+    ;; produces bindings for unique variables for each of the original
+    ;; variables.  it also processes the right-hand sides of the variable
+    ;; bindings and selects either the original environment (for let) or the
+    ;; updated environment (for letrec).
     (define process-bindings
       (lambda (rec? env bindings f)
         (let loop ([bindings bindings] [rfml* '()] [re* '()])
@@ -501,22 +452,22 @@
               (let ([binding (car bindings)])
                 (loop (cdr bindings) (cons (car binding) rfml*)
                       (cons (cadr binding) re*)))))))
-      ;;; Expr* - helper to process a list of expressions.
+    ;; Expr* - helper to process a list of expressions.
     (define Expr*
       (lambda (e* env)
         (map (lambda (e) (Expr e env)) e*)))
-      ;;; with-output-language rebinds quasiquote so that it will build
-      ;;; language records.
+    ;; with-output-language rebinds quasiquote so that it will build
+    ;; language records.
     (with-output-language (Lsrc Expr)
-        ;;; build-primitive - this is a helper function to build entries in the
-        ;;; initial environment for our user primitives.  the initial
-        ;;; enviornment contains a mapping of keywords and primitives to
-        ;;; processing functions that check their arity (in the case of
-        ;;; primitives) or their forms (in the case of keywords).  These are
-        ;;; put into an environment, because keywords and primitives can be
-        ;;; rebound.  (i.e. (lambda (lambda) (lambda lambda)) is a perfectly
-        ;;; valid function in Scheme that takes a function as an argument and
-        ;;; applies the argument to itself).
+                          ;; build-primitive - this is a helper function to build entries in the
+                          ;; initial environment for our user primitives.  the initial
+                          ;; enviornment contains a mapping of keywords and primitives to
+                          ;; processing functions that check their arity (in the case of
+                          ;; primitives) or their forms (in the case of keywords).  These are
+                          ;; put into an environment, because keywords and primitives can be
+                          ;; rebound.  (i.e. (lambda (lambda) (lambda lambda)) is a perfectly
+                          ;; valid function in Scheme that takes a function as an argument and
+                          ;; applies the argument to itself).
                           (define build-primitive
                             (lambda (as)
                               (let ([name (car as)] [argc (cdr as)])
@@ -525,15 +476,15 @@
                                           (error who
                                                  "primitives with arbitrary counts are not currently supported"
                                                  name)
-                    ;;; we'd love to support arbitrary argument lists, but we'd
-                    ;;; need to either:
-                    ;;;   1. get rid of raw primitives, or
-                    ;;;   2. add function versions of our raw primitives with
-                    ;;;      arbitrary arguments, or (possibly and)
-                    ;;;   3. add general handling for functions with arbitrary
-                    ;;;      arguments. (i.e. support for (lambda args <body>)
-                    ;;;      or (lambda (x y . args) <body>), which we don't
-                    ;;;      currently support.
+                                          ;; we'd love to support arbitrary argument lists, but we'd
+                                          ;; need to either:
+                                          ;;   1. get rid of raw primitives, or
+                                          ;;   2. add function versions of our raw primitives with
+                                          ;;      arbitrary arguments, or (possibly and)
+                                          ;;   3. add general handling for functions with arbitrary
+                                          ;;      arguments. (i.e. support for (lambda args <body>)
+                                          ;;      or (lambda (x y . args) <body>), which we don't
+                                          ;;      currently support.
                                           #;(let ([argc (bitwise-not argc)])
                                           (lambda (env . e*)
                                           (if (>= (length e*) argc)
@@ -545,12 +496,12 @@
                                                 `(,name ,(Expr* e* env) ...)
                                                 (error name "invalid argument count"
                                                        (cons name e*)))))))))
-        ;;; initial-env - this is our initial environment, expressed as an
-        ;;; association list of keywords and primitives (represented as
-        ;;; symbols) to procedure handlers (represented as procedures).  As the
-        ;;; program is processed through this pass, it will be extended with
-        ;;; local bidings from variables (represented as symbols) to unique
-        ;;; variables (represented as symbols with a format of symbol.number).
+                          ;; initial-env - this is our initial environment, expressed as an
+                          ;; association list of keywords and primitives (represented as
+                          ;; symbols) to procedure handlers (represented as procedures).  As the
+                          ;; program is processed through this pass, it will be extended with
+                          ;; local bidings from variables (represented as symbols) to unique
+                          ;; variables (represented as symbols with a format of symbol.number).
                           (define initial-env
                             (cons*
                              (cons 'quote (lambda (env d)
@@ -581,9 +532,9 @@
                                                                (lambda (env x* e*)
                                                                  `(define ,(car x*) ,(car e*))))))
                              (cons 'javascript-procedure (lambda (env x)
-                                                        `(javascript-procedure ,x)))
+                                                           `(javascript-procedure ,x)))
                              (cons 'javascript-callable (lambda (env e)
-                                                        `(javascript-callable ,(Expr e env))))
+                                                          `(javascript-callable ,(Expr e env))))
                              (cons 'call-with-values (lambda (env producer consumer)
                                                        `(call-with-values ,(Expr producer env)
                                                           ,(Expr consumer env))))
@@ -609,12 +560,12 @@
                                                                                     ,body* ... ,body)))))))
 
                              (cons 'letrec* (lambda (env bindings . body*)
-                                             (process-bindings #t env bindings
-                                                               (lambda (env x* e*)
-                                                                 (process-body 'letrec env body*
-                                                                               (lambda (body* body)
-                                                                                 `(letrec ([,x* ,e*] ...)
-                                                                                    ,body* ... ,body)))))))
+                                              (process-bindings #t env bindings
+                                                                (lambda (env x* e*)
+                                                                  (process-body 'letrec env body*
+                                                                                (lambda (body* body)
+                                                                                  `(letrec ([,x* ,e*] ...)
+                                                                                     ,body* ... ,body)))))))
 
                              (cons 'set! (lambda (env x e)
                                            (cond
@@ -628,17 +579,17 @@
                                             [else (error 'set! "set to unbound variable"
                                                          (list 'set! x e))])))
                              (map build-primitive user-prims)))
-        ;;; App - helper for handling applications.
+                          ;; App - helper for handling applications.
                           (define App
                             (lambda (e env)
                               (let ([e (car e)] [e* (cdr e)])
                                 `(,(Expr e env) ,(Expr* e* env) ...))))))
-    ;;; transformer: Expr: S-expression -> LSrc:Expr (or error)
-    ;;;
-    ;;; parses an S-expression, looking for a pair (which indicates, a
-    ;;; keyword use, a primitive call, or a normal function call), a symbol
-    ;;; (which indicates a variable reference or a primitive reference), or one of
-    ;;; our constants (which indicates a raw constant).
+  ;; transformer: Expr: S-expression -> LSrc:Expr (or error)
+  ;;
+  ;; parses an S-expression, looking for a pair (which indicates, a
+  ;; keyword use, a primitive call, or a normal function call), a symbol
+  ;; (which indicates a variable reference or a primitive reference), or one of
+  ;; our constants (which indicates a raw constant).
   (Expr : * (e env) -> Expr ()
         (cond
          [(pair? e)
@@ -677,8 +628,8 @@
            [else (write e)(error 'rusec "unbound variable" e)])]
          [(constant? e) `(quote ,e)]
          [else (error who "invalid expression" e)]))
-    ;;; kick off processing the S-expression by handing Expr our initial
-    ;;; S-expression and the initial environment.
+  ;; kick off processing the S-expression by handing Expr our initial
+  ;; S-expression and the initial environment.
   (Expr e initial-env))
 
 (define-pass flatten-begin : Lsrc (e) -> Lsrc ()
@@ -697,41 +648,41 @@
                               [else
                                (loop (cdr e0*) (cons (car e0*) out))])))]))
 
-  ;;; pass: remove-one-armed-if : Lsrc -> L1
-  ;;;
-  ;;; this pass replaces the (if e0 e1) form with an if that will explicitly
-  ;;; produce a void value when the predicate expression returns false. In
-  ;;; other words:
-  ;;; (if e0 e1) => (if e0 e1 (void))
-  ;;;
-  ;;; Design descision: kept seperate from parse-and-rename to make it easier
-  ;;; to understand how the nanopass framework can be used.
-  ;;;
+;; pass: remove-one-armed-if : Lsrc -> L1
+;;
+;; this pass replaces the (if e0 e1) form with an if that will explicitly
+;; produce a void value when the predicate expression returns false. In
+;; other words:
+;; (if e0 e1) => (if e0 e1 (void))
+;;
+;; Design descision: kept seperate from parse-and-rename to make it easier
+;; to understand how the nanopass framework can be used.
+;;
 (define-pass remove-one-armed-if : Lsrc (e) -> L1 ()
   (Expr : Expr (e) -> Expr ()
         [(if ,[e0] ,[e1]) `(if ,e0 ,e1 (void))]))
 
-  ;;; pass: remove-and-or-not : L1 -> L2
-  ;;;
-  ;;; this pass looks for references to and, or, and not and replaces it with
-  ;;; the appropriate if expressions.  this pass follows the standard
-  ;;; expansions and has one small optimization:
-  ;;;
-  ;;; (if (not e0) e1 e2) => (if e0 e2 e1)           [optimization]
-  ;;; (and)               => #t                      [from Scheme standard]
-  ;;; (or)                => #f                      [from Scheme standard]
-  ;;; (and e e* ...)      => (if e (and e* ...) #f)  [standard expansion]
-  ;;; (or e e* ...)       => (let ([t e])            [standard expansion -
-  ;;;                          (if t t (or e* ...)))  avoids computing e twice]
-  ;;;
-  ;;; Design decision: again kept separate from parse-and-rename to simplify
-  ;;; the discussion of this pass (adding it to parse-and-rename doesn't really
-  ;;; make parse-and-rename much more complicated, and if we had a macro
-  ;;; system, which would likely be implemented in parse-and-rename, or before
-  ;;; it, we would probably want and, or, and not defined as macros, rather
-  ;;; than forms in the language, in which case this pass would be
-  ;;; unnecessary).
-  ;;;
+;; pass: remove-and-or-not : L1 -> L2
+;;
+;; this pass looks for references to and, or, and not and replaces it with
+;; the appropriate if expressions.  this pass follows the standard
+;; expansions and has one small optimization:
+;;
+;; (if (not e0) e1 e2) => (if e0 e2 e1)           [optimization]
+;; (and)               => #t                      [from Scheme standard]
+;; (or)                => #f                      [from Scheme standard]
+;; (and e e* ...)      => (if e (and e* ...) #f)  [standard expansion]
+;; (or e e* ...)       => (let ([t e])            [standard expansion -
+;;                          (if t t (or e* ...)))  avoids computing e twice]
+;;
+;; Design decision: again kept separate from parse-and-rename to simplify
+;; the discussion of this pass (adding it to parse-and-rename doesn't really
+;; make parse-and-rename much more complicated, and if we had a macro
+;; system, which would likely be implemented in parse-and-rename, or before
+;; it, we would probably want and, or, and not defined as macros, rather
+;; than forms in the language, in which case this pass would be
+;; unnecessary).
+;;
 (define-pass remove-and-or-not : L1 (e) -> L2 ()
   (Expr : Expr (e) -> Expr ()
         [(if (not ,[e0]) ,[e1] ,[e2]) `(if ,e0 ,e2 ,e1)]
@@ -752,39 +703,39 @@
                (let ([t (make-tmp)])
                  `(let ([,t ,e]) (if ,t ,t ,(f (car e*) (cdr e*)))))))]))
 
-  ;;; pass: make-begin-explicit : L2 -> L3
-  ;;;
-  ;;; this pass takes the L2 let, letrec, and lambda expressions (which have
-  ;;; bodies that can contain more than one expression), and converts them into
-  ;;; bodies with a single expression, wrapped in a begin if necessary.  To
-  ;;; avoid polluting the output with extra begins that contain only one
-  ;;; expression the build-begin helper checks to see if there is more then one
-  ;;; expression and if there is builds a begin.
-  ;;;
-  ;;; Effectively this does the following:
-  ;;; (let ([x* e*] ...) body0 body* ... body1) =>
-  ;;;   (let ([x* e*] ...) (begin body0 body* ... body1))
-  ;;; (letrec ([x* e*] ...) body0 body* ... body1) =>
-  ;;;   (letrec ([x* e*] ...) (begin body0 body* ... body1))
-  ;;; (lambda (x* ...) body0 body* ... body1) =>
-  ;;;   (lambda (x* ...) (begin body0 body* ... body1))
-  ;;;
-  ;;; Design Decision: This could have been included with rename-and-parse,
-  ;;; without making it significantly more compilicated, but was separated out
-  ;;; to continue with simpler nanopass passes to help make it more obvious
-  ;;; what is going on here.
-  ;;;
+;; pass: make-begin-explicit : L2 -> L3
+;;
+;; this pass takes the L2 let, letrec, and lambda expressions (which have
+;; bodies that can contain more than one expression), and converts them into
+;; bodies with a single expression, wrapped in a begin if necessary.  To
+;; avoid polluting the output with extra begins that contain only one
+;; expression the build-begin helper checks to see if there is more then one
+;; expression and if there is builds a begin.
+;;
+;; Effectively this does the following:
+;; (let ([x* e*] ...) body0 body* ... body1) =>
+;;   (let ([x* e*] ...) (begin body0 body* ... body1))
+;; (letrec ([x* e*] ...) body0 body* ... body1) =>
+;;   (letrec ([x* e*] ...) (begin body0 body* ... body1))
+;; (lambda (x* ...) body0 body* ... body1) =>
+;;   (lambda (x* ...) (begin body0 body* ... body1))
+;;
+;; Design Decision: This could have been included with rename-and-parse,
+;; without making it significantly more compilicated, but was separated out
+;; to continue with simpler nanopass passes to help make it more obvious
+;; what is going on here.
+;;
 (define-pass make-begin-explicit : L2 (e) -> L3 ()
   (Expr : Expr (e) -> Expr ()
-      ;;; Note: the defitions are within the body of the Expr transformer
-      ;;; instead of being within the body of the pass.  This means the
-      ;;; quasiquote is bound to the Expr form, and we don't need to use
-      ;;; with-output-language.
+        ;; Note: the defitions are within the body of the Expr transformer
+        ;; instead of being within the body of the pass.  This means the
+        ;; quasiquote is bound to the Expr form, and we don't need to use
+        ;; with-output-language.
         (definitions
-        ;;; build-begin - helper function to build a begin only when the body
-        ;;; contains more then one expression.  (this version of the helper
-        ;;; is a little over-kill, but it makes our traces look a little
-        ;;; cleaner.  there should be a simpler way of doing this.)
+          ;; build-begin - helper function to build a begin only when the body
+          ;; contains more then one expression.  (this version of the helper
+          ;; is a little over-kill, but it makes our traces look a little
+          ;; cleaner.  there should be a simpler way of doing this.)
           (define build-begin
             (lambda (e* e)
               (nanopass-case (L3 Expr) e
@@ -808,23 +759,23 @@
         [(lambda (,x* ...) ,[body*] ... ,[body])
          `(lambda (,x* ...) ,(build-begin body* body))]))
 
-  ;;; a little helper mostly shamelesly stolen from
-  ;;; the Chez Scheme User's Guide
+;; a little helper mostly shamelesly stolen from
+;; the Chez Scheme User's Guide
 (define-syntax with-implicit
   (syntax-rules ()
     [(_ (tid id ...) body0 ... body1)
      (with-syntax ([id (datum->syntax #'tid 'id)] ...)
        body0 ... body1)]))
 
-  ;;; a little macro to make building a compiler with tracing that we can turn
-  ;;; off and on easier.  no support for looping in this, but the syntax is very
-  ;;; simple:
-  ;;; (define-compiler my-compiler-name
-  ;;;   (pass1 unparser)
-  ;;;   (pass2 unparser)
-  ;;;   ...
-  ;;;   pass-to-generate-c)
-  ;;;
+;; a little macro to make building a compiler with tracing that we can turn
+;; off and on easier.  no support for looping in this, but the syntax is very
+;; simple:
+;; (define-compiler my-compiler-name
+;;   (pass1 unparser)
+;;   (pass2 unparser)
+;;   ...
+;;   pass-to-generate-c)
+;;
 (define-syntax define-compiler
   (lambda (x)
     (syntax-case x ()
@@ -965,8 +916,8 @@
          (let ((args (make-tmp)))
            `(lambda (k)
               (,e0 (lambda ,args
-                       (,e1 (lambda (v1)
-                              (apply v1 (prepend k ,args))))))))]
+                     (,e1 (lambda (v1)
+                            (apply v1 (prepend k ,args))))))))]
 
         ;; primitive application
         [(,pr ,[e0] ,[e1])
@@ -1268,18 +1219,18 @@
                  (loop (cdr libraries)))))))
 
 (define order (let loop0 ((no-dependency no-dependency)
-                        (out '()))
-              (if (null? no-dependency)
-                  (reverse out)
-                  (let ((dependency (car no-dependency)))
-                    (set! no-dependency (cdr no-dependency))
-                    (let loop1 ((used-by (filter (lambda (x) (equal? (cdr x) dependency)) dependencies)))
-                      (unless (null? used-by)
-                        (set! dependencies (remove (car used-by) dependencies))
-                        (unless (ref dependencies (caar used-by))
-                          (set! no-dependency (cons (caar used-by) no-dependency)))
-                        (loop1 (cdr used-by))))
-                    (loop0 no-dependency (cons dependency out))))))
+                          (out '()))
+                (if (null? no-dependency)
+                    (reverse out)
+                    (let ((dependency (car no-dependency)))
+                      (set! no-dependency (cdr no-dependency))
+                      (let loop1 ((used-by (filter (lambda (x) (equal? (cdr x) dependency)) dependencies)))
+                        (unless (null? used-by)
+                          (set! dependencies (remove (car used-by) dependencies))
+                          (unless (ref dependencies (caar used-by))
+                            (set! no-dependency (cons (caar used-by) no-dependency)))
+                          (loop1 (cdr used-by))))
+                      (loop0 no-dependency (cons dependency out))))))
 
 (let loop ((libraries libraries))
   (unless (null? libraries)
@@ -1291,10 +1242,10 @@
 (define env (copy-environment (environment '(chezscheme))))
 
 (define expanded
-   (expand `(begin
-              ,@(map (lambda (x) (ref module-bodies x)) order)
-              ,@(map (lambda (x) `(import ,(ref library-module-names x))) imports)
-              ,@program) env))
+  (expand `(begin
+             ,@(map (lambda (x) (ref module-bodies x)) order)
+             ,@(map (lambda (x) `(import ,(ref library-module-names x))) imports)
+             ,@program) env))
 
 (define (extract bindings)
   (let loop ((bindings bindings)
