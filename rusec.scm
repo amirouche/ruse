@@ -92,8 +92,8 @@
 ;;;
 ;;;
 (import (chezscheme)
-        (nanopass))
-
+        (nanopass)
+        (matchable))
 
 (define (pk . args)
   (display ";;; " (current-error-port))
@@ -762,7 +762,7 @@
                  [(symbol? v) v]
                  [(primitive? e) e]
                  [else (error who "invalid syntax" e)])))]
-           [else (error who "unbound variable" e)])]
+           [else (write e)(error 'rusec "unbound variable" e)])]
          [(constant? e) `(quote ,e)]
          [else (error who "invalid expression" e)]))
     ;;; kick off processing the S-expression by handing Expr our initial
@@ -1419,9 +1419,37 @@
                 (cons (cadar body) toplevel)))
          (else (loop '() (append (reverse body) out) toplevel))))))
 
-(define cool (toplevel-hoisting expanded))
+(define (remove-top-level-value exp)
+  (match exp
+    (('begin exp ...)
+     `(begin ,@(map remove-top-level-value exp)))
+    ((('$primitive level '$set-top-level-value!) x e)
+     `(set! ,(cadr x) ,(remove-top-level-value e)))
+    ;; specific handling of foreign-procedure
+    (((('$primitive level '$top-level-value) x0) x1)
+     (let ((x0* (remove-top-level-value x0))
+           (x1* (remove-top-level-value x1)))
+       (if (eq? (string->symbol (symbol->string (cadr x0*)))
+                'javascript-procedure)
+           `(javascript-procedure ,(string->symbol (symbol->string x1*)))
+           (list (cadr x0*) x1*))))
+    ((('$primitive level '$top-level-value) x)
+     (cadr x))
+    ((let ((x e) ...) body ...)
+     (let ((e* (map remove-top-level-value e))
+           (body* (map remove-top-level-value body)))
+       `(let ((x e*) ... body* ...))))
+    ((e ...)
+     (map remove-top-level-value e))
+    (else exp)))
 
-(define compiled (my-tiny-compile cool))
+(pk 'expanded expanded)
+
+(define cool0 (pk 'cool0 (remove-top-level-value expanded)))
+
+(define cool1 (pk 'cool1 (toplevel-hoisting cool0)))
+
+(define compiled (my-tiny-compile cool1))
 
 (cond
  ((string=? target "javascript")
