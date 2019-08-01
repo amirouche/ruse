@@ -511,6 +511,7 @@
                                             (cond
                                              ((or (null? d)
                                                   (string? d)
+                                                  (boolean? d)
                                                   (number? d)
                                                   (symbol? d))
                                               `(quote ,d))
@@ -883,14 +884,14 @@
   (Expr : Expr (e) -> Expr ()
         [(quote ,d)
          (cond
-          ((or (number? d) (string? d))
+          ((or (number? d) (string? d) (boolean? d))
            `(lambda (k) (k ,d)))
           ((symbol? d)
            `(lambda (k)
               (k (ruse-symbol-get-or-create ,(symbol->string d)))))
           ((null? d)
            '())
-          (else (error 'rusec "oops" e)))]
+          (else (error 'rusec "cps-trampoline oops" e)))]
 
         [(set! ,x ,[e])
          `(lambda (k)
@@ -1057,6 +1058,7 @@
    [(number? x) (number->string x)]
    [(string? x) (string-append "\"" x "\"")]
    [(symbol? x) (symbol->c-id x)]
+   [(boolean? x) (if x "true" "false")]
 
    ;; (void)
    [(and (pair? x) (eq? (car x) 'void))

@@ -35,19 +35,17 @@
 
   ;; app
 
-  (define (onClick model)
+  (define (onEnded model)
     (lambda (event)
+      (pk "youpi")
       (add model 1)))
 
   (define (init) 0)
 
   (define (view model mc)
     `(div
-      (@ ("id" "box"))
-      "(= count "
-      ,model
-      ") "
-      (button (@ ("onClick" ,(mc onClick)))
-              "increment")))
-
+      (ReactAudioPlayer (@ (src "music/003/Lobotomie Reloaded (prod. RROBIN)-402884550.mp3")
+                           (autoPlay #t)
+                           (onEnded ,(mc onEnded))
+                           (controls #t)))))
   (create-app init view))

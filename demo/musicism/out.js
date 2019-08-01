@@ -213,13 +213,13 @@ let program = function(k) {
           ) {
             return (function(k) {
               return (function(k) {
-                return k(function(k, t_90) {
+                return k(function(k, t_91) {
                   return (function(k) {
                     return (function(k) {
-                      return k(function(k, t_91) {
+                      return k(function(k, t_92) {
                         return (function(k) {
                           return (function(k) {
-                            return k(function(k, t_92) {
+                            return k(function(k, t_93) {
                               return (function(k) {
                                 return (function(k) {
                                   return k(function(k, patch__38) {
@@ -229,21 +229,21 @@ let program = function(k) {
                                           k,
                                           _create_app_43,
                                           create_app_42,
-                                          onClick_41,
+                                          onEnded_41,
                                           init_40,
                                           view_39
                                         ) {
                                           return (function(k) {
                                             return (function(k) {
-                                              return k(function(k, t_85) {
+                                              return k(function(k, t_86) {
                                                 return (function(k) {
                                                   return (function(k) {
-                                                    return k(function(k, t_86) {
+                                                    return k(function(k, t_87) {
                                                       return (function(k) {
                                                         return (function(k) {
                                                           return k(function(
                                                             k,
-                                                            t_87
+                                                            t_88
                                                           ) {
                                                             return (function(
                                                               k
@@ -254,7 +254,7 @@ let program = function(k) {
                                                                 return k(
                                                                   function(
                                                                     k,
-                                                                    t_88
+                                                                    t_89
                                                                   ) {
                                                                     return (function(
                                                                       k
@@ -265,7 +265,7 @@ let program = function(k) {
                                                                         return k(
                                                                           function(
                                                                             k,
-                                                                            t_89
+                                                                            t_90
                                                                           ) {
                                                                             return (function(
                                                                               k
@@ -276,7 +276,7 @@ let program = function(k) {
                                                                                 ) {
                                                                                   return init_40(
                                                                                     function(
-                                                                                      t_93
+                                                                                      t_94
                                                                                     ) {
                                                                                       return view_39(
                                                                                         function(
@@ -289,7 +289,7 @@ let program = function(k) {
                                                                                                 k
                                                                                               ) {
                                                                                                 return k(
-                                                                                                  t_93
+                                                                                                  t_94
                                                                                                 );
                                                                                               },
                                                                                               function(
@@ -345,12 +345,12 @@ let program = function(k) {
                                                                                           );
                                                                                         })(
                                                                                           function(
-                                                                                            t_103
+                                                                                            t_108
                                                                                           ) {
                                                                                             return (function(
                                                                                               k
                                                                                             ) {
-                                                                                              return ruse_cons_4(
+                                                                                              return ruse_list_3(
                                                                                                 function(
                                                                                                   v0
                                                                                                 ) {
@@ -359,345 +359,50 @@ let program = function(k) {
                                                                                                   ) {
                                                                                                     return k(
                                                                                                       ruse_symbol_get_or_create(
-                                                                                                        "@"
+                                                                                                        "ReactAudioPlayer"
                                                                                                       )
                                                                                                     );
                                                                                                   })(
                                                                                                     function(
-                                                                                                      t_97
+                                                                                                      t_107
                                                                                                     ) {
                                                                                                       return (function(
                                                                                                         k
                                                                                                       ) {
-                                                                                                        return ruse_cons_4(
+                                                                                                        return ruse_cons__5(
                                                                                                           function(
                                                                                                             v0
                                                                                                           ) {
                                                                                                             return (function(
                                                                                                               k
                                                                                                             ) {
-                                                                                                              return ruse_cons_4(
-                                                                                                                function(
-                                                                                                                  v0
-                                                                                                                ) {
-                                                                                                                  return (function(
-                                                                                                                    k
-                                                                                                                  ) {
-                                                                                                                    return k(
-                                                                                                                      "id"
-                                                                                                                    );
-                                                                                                                  })(
-                                                                                                                    function(
-                                                                                                                      t_95
-                                                                                                                    ) {
-                                                                                                                      return (function(
-                                                                                                                        k
-                                                                                                                      ) {
-                                                                                                                        return ruse_cons_4(
-                                                                                                                          function(
-                                                                                                                            v0
-                                                                                                                          ) {
-                                                                                                                            return (function(
-                                                                                                                              k
-                                                                                                                            ) {
-                                                                                                                              return k(
-                                                                                                                                "box"
-                                                                                                                              );
-                                                                                                                            })(
-                                                                                                                              function(
-                                                                                                                                t_94
-                                                                                                                              ) {
-                                                                                                                                return RUSE_EMPTY_LIST(
-                                                                                                                                  function(
-                                                                                                                                    v
-                                                                                                                                  ) {
-                                                                                                                                    return function() {
-                                                                                                                                      return v0(
-                                                                                                                                        k,
-                                                                                                                                        function(
-                                                                                                                                          k
-                                                                                                                                        ) {
-                                                                                                                                          return k(
-                                                                                                                                            t_94
-                                                                                                                                          );
-                                                                                                                                        },
-                                                                                                                                        function(
-                                                                                                                                          k
-                                                                                                                                        ) {
-                                                                                                                                          return k(
-                                                                                                                                            v
-                                                                                                                                          );
-                                                                                                                                        }
-                                                                                                                                      );
-                                                                                                                                    };
-                                                                                                                                  }
-                                                                                                                                );
-                                                                                                                              }
-                                                                                                                            );
-                                                                                                                          }
-                                                                                                                        );
-                                                                                                                      })(
-                                                                                                                        function(
-                                                                                                                          v
-                                                                                                                        ) {
-                                                                                                                          return function() {
-                                                                                                                            return v0(
-                                                                                                                              k,
-                                                                                                                              function(
-                                                                                                                                k
-                                                                                                                              ) {
-                                                                                                                                return k(
-                                                                                                                                  t_95
-                                                                                                                                );
-                                                                                                                              },
-                                                                                                                              function(
-                                                                                                                                k
-                                                                                                                              ) {
-                                                                                                                                return k(
-                                                                                                                                  v
-                                                                                                                                );
-                                                                                                                              }
-                                                                                                                            );
-                                                                                                                          };
-                                                                                                                        }
-                                                                                                                      );
-                                                                                                                    }
-                                                                                                                  );
-                                                                                                                }
+                                                                                                              return k(
+                                                                                                                ruse_symbol_get_or_create(
+                                                                                                                  "@"
+                                                                                                                )
                                                                                                               );
                                                                                                             })(
                                                                                                               function(
-                                                                                                                t_96
+                                                                                                                t_103
                                                                                                               ) {
-                                                                                                                return RUSE_EMPTY_LIST(
-                                                                                                                  function(
-                                                                                                                    v
-                                                                                                                  ) {
-                                                                                                                    return function() {
-                                                                                                                      return v0(
-                                                                                                                        k,
-                                                                                                                        function(
-                                                                                                                          k
-                                                                                                                        ) {
-                                                                                                                          return k(
-                                                                                                                            t_96
-                                                                                                                          );
-                                                                                                                        },
-                                                                                                                        function(
-                                                                                                                          k
-                                                                                                                        ) {
-                                                                                                                          return k(
-                                                                                                                            v
-                                                                                                                          );
-                                                                                                                        }
-                                                                                                                      );
-                                                                                                                    };
-                                                                                                                  }
-                                                                                                                );
-                                                                                                              }
-                                                                                                            );
-                                                                                                          }
-                                                                                                        );
-                                                                                                      })(
-                                                                                                        function(
-                                                                                                          v
-                                                                                                        ) {
-                                                                                                          return function() {
-                                                                                                            return v0(
-                                                                                                              k,
-                                                                                                              function(
-                                                                                                                k
-                                                                                                              ) {
-                                                                                                                return k(
-                                                                                                                  t_97
-                                                                                                                );
-                                                                                                              },
-                                                                                                              function(
-                                                                                                                k
-                                                                                                              ) {
-                                                                                                                return k(
-                                                                                                                  v
-                                                                                                                );
-                                                                                                              }
-                                                                                                            );
-                                                                                                          };
-                                                                                                        }
-                                                                                                      );
-                                                                                                    }
-                                                                                                  );
-                                                                                                }
-                                                                                              );
-                                                                                            })(
-                                                                                              function(
-                                                                                                t_104
-                                                                                              ) {
-                                                                                                return (function(
-                                                                                                  k
-                                                                                                ) {
-                                                                                                  return k(
-                                                                                                    "(= count "
-                                                                                                  );
-                                                                                                })(
-                                                                                                  function(
-                                                                                                    t_105
-                                                                                                  ) {
-                                                                                                    return model_44(
-                                                                                                      function(
-                                                                                                        t_106
-                                                                                                      ) {
-                                                                                                        return (function(
-                                                                                                          k
-                                                                                                        ) {
-                                                                                                          return k(
-                                                                                                            ") "
-                                                                                                          );
-                                                                                                        })(
-                                                                                                          function(
-                                                                                                            t_107
-                                                                                                          ) {
-                                                                                                            return (function(
-                                                                                                              k
-                                                                                                            ) {
-                                                                                                              return ruse_cons__5(
-                                                                                                                function(
-                                                                                                                  v0
+                                                                                                                return (function(
+                                                                                                                  k
                                                                                                                 ) {
-                                                                                                                  return (function(
-                                                                                                                    k
-                                                                                                                  ) {
-                                                                                                                    return k(
-                                                                                                                      ruse_symbol_get_or_create(
-                                                                                                                        "button"
-                                                                                                                      )
-                                                                                                                    );
-                                                                                                                  })(
+                                                                                                                  return ruse_cons_4(
                                                                                                                     function(
-                                                                                                                      t_101
+                                                                                                                      v0
                                                                                                                     ) {
                                                                                                                       return (function(
                                                                                                                         k
                                                                                                                       ) {
-                                                                                                                        return ruse_list_3(
-                                                                                                                          function(
-                                                                                                                            v0
-                                                                                                                          ) {
-                                                                                                                            return (function(
-                                                                                                                              k
-                                                                                                                            ) {
-                                                                                                                              return k(
-                                                                                                                                ruse_symbol_get_or_create(
-                                                                                                                                  "@"
-                                                                                                                                )
-                                                                                                                              );
-                                                                                                                            })(
-                                                                                                                              function(
-                                                                                                                                t_99
-                                                                                                                              ) {
-                                                                                                                                return (function(
-                                                                                                                                  k
-                                                                                                                                ) {
-                                                                                                                                  return ruse_list_3(
-                                                                                                                                    function(
-                                                                                                                                      v0
-                                                                                                                                    ) {
-                                                                                                                                      return (function(
-                                                                                                                                        k
-                                                                                                                                      ) {
-                                                                                                                                        return k(
-                                                                                                                                          "onClick"
-                                                                                                                                        );
-                                                                                                                                      })(
-                                                                                                                                        function(
-                                                                                                                                          t_98
-                                                                                                                                        ) {
-                                                                                                                                          return (function(
-                                                                                                                                            k
-                                                                                                                                          ) {
-                                                                                                                                            return mc_45(
-                                                                                                                                              function(
-                                                                                                                                                v0
-                                                                                                                                              ) {
-                                                                                                                                                return onClick_41(
-                                                                                                                                                  function(
-                                                                                                                                                    v
-                                                                                                                                                  ) {
-                                                                                                                                                    return function() {
-                                                                                                                                                      return v0(
-                                                                                                                                                        k,
-                                                                                                                                                        function(
-                                                                                                                                                          k
-                                                                                                                                                        ) {
-                                                                                                                                                          return k(
-                                                                                                                                                            v
-                                                                                                                                                          );
-                                                                                                                                                        }
-                                                                                                                                                      );
-                                                                                                                                                    };
-                                                                                                                                                  }
-                                                                                                                                                );
-                                                                                                                                              }
-                                                                                                                                            );
-                                                                                                                                          })(
-                                                                                                                                            function(
-                                                                                                                                              v
-                                                                                                                                            ) {
-                                                                                                                                              return function() {
-                                                                                                                                                return v0(
-                                                                                                                                                  k,
-                                                                                                                                                  function(
-                                                                                                                                                    k
-                                                                                                                                                  ) {
-                                                                                                                                                    return k(
-                                                                                                                                                      t_98
-                                                                                                                                                    );
-                                                                                                                                                  },
-                                                                                                                                                  function(
-                                                                                                                                                    k
-                                                                                                                                                  ) {
-                                                                                                                                                    return k(
-                                                                                                                                                      v
-                                                                                                                                                    );
-                                                                                                                                                  }
-                                                                                                                                                );
-                                                                                                                                              };
-                                                                                                                                            }
-                                                                                                                                          );
-                                                                                                                                        }
-                                                                                                                                      );
-                                                                                                                                    }
-                                                                                                                                  );
-                                                                                                                                })(
-                                                                                                                                  function(
-                                                                                                                                    v
-                                                                                                                                  ) {
-                                                                                                                                    return function() {
-                                                                                                                                      return v0(
-                                                                                                                                        k,
-                                                                                                                                        function(
-                                                                                                                                          k
-                                                                                                                                        ) {
-                                                                                                                                          return k(
-                                                                                                                                            t_99
-                                                                                                                                          );
-                                                                                                                                        },
-                                                                                                                                        function(
-                                                                                                                                          k
-                                                                                                                                        ) {
-                                                                                                                                          return k(
-                                                                                                                                            v
-                                                                                                                                          );
-                                                                                                                                        }
-                                                                                                                                      );
-                                                                                                                                    };
-                                                                                                                                  }
-                                                                                                                                );
-                                                                                                                              }
-                                                                                                                            );
-                                                                                                                          }
+                                                                                                                        return k(
+                                                                                                                          ruse_symbol_get_or_create(
+                                                                                                                            "src"
+                                                                                                                          )
                                                                                                                         );
                                                                                                                       })(
                                                                                                                         function(
-                                                                                                                          t_102
+                                                                                                                          t_99
                                                                                                                         ) {
                                                                                                                           return (function(
                                                                                                                             k
@@ -710,11 +415,11 @@ let program = function(k) {
                                                                                                                                   k
                                                                                                                                 ) {
                                                                                                                                   return k(
-                                                                                                                                    "increment"
+                                                                                                                                    "music/003/Lobotomie Reloaded (prod. RROBIN)-402884550.mp3"
                                                                                                                                   );
                                                                                                                                 })(
                                                                                                                                   function(
-                                                                                                                                    t_100
+                                                                                                                                    t_98
                                                                                                                                   ) {
                                                                                                                                     return RUSE_EMPTY_LIST(
                                                                                                                                       function(
@@ -727,7 +432,7 @@ let program = function(k) {
                                                                                                                                               k
                                                                                                                                             ) {
                                                                                                                                               return k(
-                                                                                                                                                t_100
+                                                                                                                                                t_98
                                                                                                                                               );
                                                                                                                                             },
                                                                                                                                             function(
@@ -756,14 +461,7 @@ let program = function(k) {
                                                                                                                                     k
                                                                                                                                   ) {
                                                                                                                                     return k(
-                                                                                                                                      t_101
-                                                                                                                                    );
-                                                                                                                                  },
-                                                                                                                                  function(
-                                                                                                                                    k
-                                                                                                                                  ) {
-                                                                                                                                    return k(
-                                                                                                                                      t_102
+                                                                                                                                      t_99
                                                                                                                                     );
                                                                                                                                   },
                                                                                                                                   function(
@@ -781,67 +479,429 @@ let program = function(k) {
                                                                                                                       );
                                                                                                                     }
                                                                                                                   );
-                                                                                                                }
-                                                                                                              );
-                                                                                                            })(
-                                                                                                              function(
-                                                                                                                v
-                                                                                                              ) {
-                                                                                                                return function() {
-                                                                                                                  return v0(
-                                                                                                                    k,
-                                                                                                                    function(
+                                                                                                                })(
+                                                                                                                  function(
+                                                                                                                    t_104
+                                                                                                                  ) {
+                                                                                                                    return (function(
                                                                                                                       k
                                                                                                                     ) {
-                                                                                                                      return k(
-                                                                                                                        t_103
+                                                                                                                      return ruse_cons_4(
+                                                                                                                        function(
+                                                                                                                          v0
+                                                                                                                        ) {
+                                                                                                                          return (function(
+                                                                                                                            k
+                                                                                                                          ) {
+                                                                                                                            return k(
+                                                                                                                              ruse_symbol_get_or_create(
+                                                                                                                                "autoPlay"
+                                                                                                                              )
+                                                                                                                            );
+                                                                                                                          })(
+                                                                                                                            function(
+                                                                                                                              t_96
+                                                                                                                            ) {
+                                                                                                                              return (function(
+                                                                                                                                k
+                                                                                                                              ) {
+                                                                                                                                return ruse_cons_4(
+                                                                                                                                  function(
+                                                                                                                                    v0
+                                                                                                                                  ) {
+                                                                                                                                    return (function(
+                                                                                                                                      k
+                                                                                                                                    ) {
+                                                                                                                                      return k(
+                                                                                                                                        true
+                                                                                                                                      );
+                                                                                                                                    })(
+                                                                                                                                      function(
+                                                                                                                                        t_95
+                                                                                                                                      ) {
+                                                                                                                                        return RUSE_EMPTY_LIST(
+                                                                                                                                          function(
+                                                                                                                                            v
+                                                                                                                                          ) {
+                                                                                                                                            return function() {
+                                                                                                                                              return v0(
+                                                                                                                                                k,
+                                                                                                                                                function(
+                                                                                                                                                  k
+                                                                                                                                                ) {
+                                                                                                                                                  return k(
+                                                                                                                                                    t_95
+                                                                                                                                                  );
+                                                                                                                                                },
+                                                                                                                                                function(
+                                                                                                                                                  k
+                                                                                                                                                ) {
+                                                                                                                                                  return k(
+                                                                                                                                                    v
+                                                                                                                                                  );
+                                                                                                                                                }
+                                                                                                                                              );
+                                                                                                                                            };
+                                                                                                                                          }
+                                                                                                                                        );
+                                                                                                                                      }
+                                                                                                                                    );
+                                                                                                                                  }
+                                                                                                                                );
+                                                                                                                              })(
+                                                                                                                                function(
+                                                                                                                                  v
+                                                                                                                                ) {
+                                                                                                                                  return function() {
+                                                                                                                                    return v0(
+                                                                                                                                      k,
+                                                                                                                                      function(
+                                                                                                                                        k
+                                                                                                                                      ) {
+                                                                                                                                        return k(
+                                                                                                                                          t_96
+                                                                                                                                        );
+                                                                                                                                      },
+                                                                                                                                      function(
+                                                                                                                                        k
+                                                                                                                                      ) {
+                                                                                                                                        return k(
+                                                                                                                                          v
+                                                                                                                                        );
+                                                                                                                                      }
+                                                                                                                                    );
+                                                                                                                                  };
+                                                                                                                                }
+                                                                                                                              );
+                                                                                                                            }
+                                                                                                                          );
+                                                                                                                        }
                                                                                                                       );
-                                                                                                                    },
-                                                                                                                    function(
-                                                                                                                      k
-                                                                                                                    ) {
-                                                                                                                      return k(
-                                                                                                                        t_104
-                                                                                                                      );
-                                                                                                                    },
-                                                                                                                    function(
-                                                                                                                      k
-                                                                                                                    ) {
-                                                                                                                      return k(
+                                                                                                                    })(
+                                                                                                                      function(
                                                                                                                         t_105
-                                                                                                                      );
-                                                                                                                    },
-                                                                                                                    function(
-                                                                                                                      k
-                                                                                                                    ) {
-                                                                                                                      return k(
-                                                                                                                        t_106
-                                                                                                                      );
-                                                                                                                    },
-                                                                                                                    function(
-                                                                                                                      k
-                                                                                                                    ) {
-                                                                                                                      return k(
-                                                                                                                        t_107
-                                                                                                                      );
-                                                                                                                    },
-                                                                                                                    function(
-                                                                                                                      k
-                                                                                                                    ) {
-                                                                                                                      return k(
-                                                                                                                        v
-                                                                                                                      );
-                                                                                                                    }
-                                                                                                                  );
-                                                                                                                };
+                                                                                                                      ) {
+                                                                                                                        return (function(
+                                                                                                                          k
+                                                                                                                        ) {
+                                                                                                                          return ruse_list_3(
+                                                                                                                            function(
+                                                                                                                              v0
+                                                                                                                            ) {
+                                                                                                                              return (function(
+                                                                                                                                k
+                                                                                                                              ) {
+                                                                                                                                return k(
+                                                                                                                                  ruse_symbol_get_or_create(
+                                                                                                                                    "onEnded"
+                                                                                                                                  )
+                                                                                                                                );
+                                                                                                                              })(
+                                                                                                                                function(
+                                                                                                                                  t_97
+                                                                                                                                ) {
+                                                                                                                                  return (function(
+                                                                                                                                    k
+                                                                                                                                  ) {
+                                                                                                                                    return mc_45(
+                                                                                                                                      function(
+                                                                                                                                        v0
+                                                                                                                                      ) {
+                                                                                                                                        return onEnded_41(
+                                                                                                                                          function(
+                                                                                                                                            v
+                                                                                                                                          ) {
+                                                                                                                                            return function() {
+                                                                                                                                              return v0(
+                                                                                                                                                k,
+                                                                                                                                                function(
+                                                                                                                                                  k
+                                                                                                                                                ) {
+                                                                                                                                                  return k(
+                                                                                                                                                    v
+                                                                                                                                                  );
+                                                                                                                                                }
+                                                                                                                                              );
+                                                                                                                                            };
+                                                                                                                                          }
+                                                                                                                                        );
+                                                                                                                                      }
+                                                                                                                                    );
+                                                                                                                                  })(
+                                                                                                                                    function(
+                                                                                                                                      v
+                                                                                                                                    ) {
+                                                                                                                                      return function() {
+                                                                                                                                        return v0(
+                                                                                                                                          k,
+                                                                                                                                          function(
+                                                                                                                                            k
+                                                                                                                                          ) {
+                                                                                                                                            return k(
+                                                                                                                                              t_97
+                                                                                                                                            );
+                                                                                                                                          },
+                                                                                                                                          function(
+                                                                                                                                            k
+                                                                                                                                          ) {
+                                                                                                                                            return k(
+                                                                                                                                              v
+                                                                                                                                            );
+                                                                                                                                          }
+                                                                                                                                        );
+                                                                                                                                      };
+                                                                                                                                    }
+                                                                                                                                  );
+                                                                                                                                }
+                                                                                                                              );
+                                                                                                                            }
+                                                                                                                          );
+                                                                                                                        })(
+                                                                                                                          function(
+                                                                                                                            t_106
+                                                                                                                          ) {
+                                                                                                                            return (function(
+                                                                                                                              k
+                                                                                                                            ) {
+                                                                                                                              return ruse_cons_4(
+                                                                                                                                function(
+                                                                                                                                  v0
+                                                                                                                                ) {
+                                                                                                                                  return (function(
+                                                                                                                                    k
+                                                                                                                                  ) {
+                                                                                                                                    return ruse_cons_4(
+                                                                                                                                      function(
+                                                                                                                                        v0
+                                                                                                                                      ) {
+                                                                                                                                        return (function(
+                                                                                                                                          k
+                                                                                                                                        ) {
+                                                                                                                                          return k(
+                                                                                                                                            ruse_symbol_get_or_create(
+                                                                                                                                              "controls"
+                                                                                                                                            )
+                                                                                                                                          );
+                                                                                                                                        })(
+                                                                                                                                          function(
+                                                                                                                                            t_101
+                                                                                                                                          ) {
+                                                                                                                                            return (function(
+                                                                                                                                              k
+                                                                                                                                            ) {
+                                                                                                                                              return ruse_cons_4(
+                                                                                                                                                function(
+                                                                                                                                                  v0
+                                                                                                                                                ) {
+                                                                                                                                                  return (function(
+                                                                                                                                                    k
+                                                                                                                                                  ) {
+                                                                                                                                                    return k(
+                                                                                                                                                      true
+                                                                                                                                                    );
+                                                                                                                                                  })(
+                                                                                                                                                    function(
+                                                                                                                                                      t_100
+                                                                                                                                                    ) {
+                                                                                                                                                      return RUSE_EMPTY_LIST(
+                                                                                                                                                        function(
+                                                                                                                                                          v
+                                                                                                                                                        ) {
+                                                                                                                                                          return function() {
+                                                                                                                                                            return v0(
+                                                                                                                                                              k,
+                                                                                                                                                              function(
+                                                                                                                                                                k
+                                                                                                                                                              ) {
+                                                                                                                                                                return k(
+                                                                                                                                                                  t_100
+                                                                                                                                                                );
+                                                                                                                                                              },
+                                                                                                                                                              function(
+                                                                                                                                                                k
+                                                                                                                                                              ) {
+                                                                                                                                                                return k(
+                                                                                                                                                                  v
+                                                                                                                                                                );
+                                                                                                                                                              }
+                                                                                                                                                            );
+                                                                                                                                                          };
+                                                                                                                                                        }
+                                                                                                                                                      );
+                                                                                                                                                    }
+                                                                                                                                                  );
+                                                                                                                                                }
+                                                                                                                                              );
+                                                                                                                                            })(
+                                                                                                                                              function(
+                                                                                                                                                v
+                                                                                                                                              ) {
+                                                                                                                                                return function() {
+                                                                                                                                                  return v0(
+                                                                                                                                                    k,
+                                                                                                                                                    function(
+                                                                                                                                                      k
+                                                                                                                                                    ) {
+                                                                                                                                                      return k(
+                                                                                                                                                        t_101
+                                                                                                                                                      );
+                                                                                                                                                    },
+                                                                                                                                                    function(
+                                                                                                                                                      k
+                                                                                                                                                    ) {
+                                                                                                                                                      return k(
+                                                                                                                                                        v
+                                                                                                                                                      );
+                                                                                                                                                    }
+                                                                                                                                                  );
+                                                                                                                                                };
+                                                                                                                                              }
+                                                                                                                                            );
+                                                                                                                                          }
+                                                                                                                                        );
+                                                                                                                                      }
+                                                                                                                                    );
+                                                                                                                                  })(
+                                                                                                                                    function(
+                                                                                                                                      t_102
+                                                                                                                                    ) {
+                                                                                                                                      return RUSE_EMPTY_LIST(
+                                                                                                                                        function(
+                                                                                                                                          v
+                                                                                                                                        ) {
+                                                                                                                                          return function() {
+                                                                                                                                            return v0(
+                                                                                                                                              k,
+                                                                                                                                              function(
+                                                                                                                                                k
+                                                                                                                                              ) {
+                                                                                                                                                return k(
+                                                                                                                                                  t_102
+                                                                                                                                                );
+                                                                                                                                              },
+                                                                                                                                              function(
+                                                                                                                                                k
+                                                                                                                                              ) {
+                                                                                                                                                return k(
+                                                                                                                                                  v
+                                                                                                                                                );
+                                                                                                                                              }
+                                                                                                                                            );
+                                                                                                                                          };
+                                                                                                                                        }
+                                                                                                                                      );
+                                                                                                                                    }
+                                                                                                                                  );
+                                                                                                                                }
+                                                                                                                              );
+                                                                                                                            })(
+                                                                                                                              function(
+                                                                                                                                v
+                                                                                                                              ) {
+                                                                                                                                return function() {
+                                                                                                                                  return v0(
+                                                                                                                                    k,
+                                                                                                                                    function(
+                                                                                                                                      k
+                                                                                                                                    ) {
+                                                                                                                                      return k(
+                                                                                                                                        t_103
+                                                                                                                                      );
+                                                                                                                                    },
+                                                                                                                                    function(
+                                                                                                                                      k
+                                                                                                                                    ) {
+                                                                                                                                      return k(
+                                                                                                                                        t_104
+                                                                                                                                      );
+                                                                                                                                    },
+                                                                                                                                    function(
+                                                                                                                                      k
+                                                                                                                                    ) {
+                                                                                                                                      return k(
+                                                                                                                                        t_105
+                                                                                                                                      );
+                                                                                                                                    },
+                                                                                                                                    function(
+                                                                                                                                      k
+                                                                                                                                    ) {
+                                                                                                                                      return k(
+                                                                                                                                        t_106
+                                                                                                                                      );
+                                                                                                                                    },
+                                                                                                                                    function(
+                                                                                                                                      k
+                                                                                                                                    ) {
+                                                                                                                                      return k(
+                                                                                                                                        v
+                                                                                                                                      );
+                                                                                                                                    }
+                                                                                                                                  );
+                                                                                                                                };
+                                                                                                                              }
+                                                                                                                            );
+                                                                                                                          }
+                                                                                                                        );
+                                                                                                                      }
+                                                                                                                    );
+                                                                                                                  }
+                                                                                                                );
                                                                                                               }
                                                                                                             );
                                                                                                           }
                                                                                                         );
-                                                                                                      }
-                                                                                                    );
-                                                                                                  }
-                                                                                                );
+                                                                                                      })(
+                                                                                                        function(
+                                                                                                          v
+                                                                                                        ) {
+                                                                                                          return function() {
+                                                                                                            return v0(
+                                                                                                              k,
+                                                                                                              function(
+                                                                                                                k
+                                                                                                              ) {
+                                                                                                                return k(
+                                                                                                                  t_107
+                                                                                                                );
+                                                                                                              },
+                                                                                                              function(
+                                                                                                                k
+                                                                                                              ) {
+                                                                                                                return k(
+                                                                                                                  v
+                                                                                                                );
+                                                                                                              }
+                                                                                                            );
+                                                                                                          };
+                                                                                                        }
+                                                                                                      );
+                                                                                                    }
+                                                                                                  );
+                                                                                                }
+                                                                                              );
+                                                                                            })(
+                                                                                              function(
+                                                                                                v
+                                                                                              ) {
+                                                                                                return function() {
+                                                                                                  return v0(
+                                                                                                    k,
+                                                                                                    function(
+                                                                                                      k
+                                                                                                    ) {
+                                                                                                      return k(
+                                                                                                        t_108
+                                                                                                      );
+                                                                                                    },
+                                                                                                    function(
+                                                                                                      k
+                                                                                                    ) {
+                                                                                                      return k(
+                                                                                                        v
+                                                                                                      );
+                                                                                                    }
+                                                                                                  );
+                                                                                                };
                                                                                               }
                                                                                             );
                                                                                           }
@@ -963,45 +1023,118 @@ let program = function(k) {
                                                                       return (function(
                                                                         k
                                                                       ) {
-                                                                        return add_16(
+                                                                        return (function(
+                                                                          k
+                                                                        ) {
+                                                                          return k(
+                                                                            function(
+                                                                              k,
+                                                                              t_80
+                                                                            ) {
+                                                                              return (function(
+                                                                                k
+                                                                              ) {
+                                                                                return add_16(
+                                                                                  function(
+                                                                                    v0
+                                                                                  ) {
+                                                                                    return model_46(
+                                                                                      function(
+                                                                                        t_109
+                                                                                      ) {
+                                                                                        return (function(
+                                                                                          k
+                                                                                        ) {
+                                                                                          return k(
+                                                                                            1
+                                                                                          );
+                                                                                        })(
+                                                                                          function(
+                                                                                            v
+                                                                                          ) {
+                                                                                            return function() {
+                                                                                              return v0(
+                                                                                                k,
+                                                                                                function(
+                                                                                                  k
+                                                                                                ) {
+                                                                                                  return k(
+                                                                                                    t_109
+                                                                                                  );
+                                                                                                },
+                                                                                                function(
+                                                                                                  k
+                                                                                                ) {
+                                                                                                  return k(
+                                                                                                    v
+                                                                                                  );
+                                                                                                }
+                                                                                              );
+                                                                                            };
+                                                                                          }
+                                                                                        );
+                                                                                      }
+                                                                                    );
+                                                                                  }
+                                                                                );
+                                                                              })(
+                                                                                k
+                                                                              );
+                                                                            }
+                                                                          );
+                                                                        })(
                                                                           function(
                                                                             v0
                                                                           ) {
-                                                                            return model_46(
-                                                                              function(
-                                                                                t_108
-                                                                              ) {
-                                                                                return (function(
-                                                                                  k
+                                                                            return (function(
+                                                                              k
+                                                                            ) {
+                                                                              return pk_18(
+                                                                                function(
+                                                                                  v0
                                                                                 ) {
-                                                                                  return k(
-                                                                                    1
-                                                                                  );
-                                                                                })(
-                                                                                  function(
-                                                                                    v
+                                                                                  return (function(
+                                                                                    k
                                                                                   ) {
-                                                                                    return function() {
-                                                                                      return v0(
-                                                                                        k,
-                                                                                        function(
-                                                                                          k
-                                                                                        ) {
-                                                                                          return k(
-                                                                                            t_108
-                                                                                          );
-                                                                                        },
-                                                                                        function(
-                                                                                          k
-                                                                                        ) {
-                                                                                          return k(
-                                                                                            v
-                                                                                          );
-                                                                                        }
+                                                                                    return k(
+                                                                                      "youpi"
+                                                                                    );
+                                                                                  })(
+                                                                                    function(
+                                                                                      v
+                                                                                    ) {
+                                                                                      return function() {
+                                                                                        return v0(
+                                                                                          k,
+                                                                                          function(
+                                                                                            k
+                                                                                          ) {
+                                                                                            return k(
+                                                                                              v
+                                                                                            );
+                                                                                          }
+                                                                                        );
+                                                                                      };
+                                                                                    }
+                                                                                  );
+                                                                                }
+                                                                              );
+                                                                            })(
+                                                                              function(
+                                                                                v
+                                                                              ) {
+                                                                                return function() {
+                                                                                  return v0(
+                                                                                    k,
+                                                                                    function(
+                                                                                      k
+                                                                                    ) {
+                                                                                      return k(
+                                                                                        v
                                                                                       );
-                                                                                    };
-                                                                                  }
-                                                                                );
+                                                                                    }
+                                                                                  );
+                                                                                };
                                                                               }
                                                                             );
                                                                           }
@@ -1012,7 +1145,7 @@ let program = function(k) {
                                                                 })(k);
                                                               });
                                                             })(function(v) {
-                                                              onClick_41 = function(
+                                                              onEnded_41 = function(
                                                                 k
                                                               ) {
                                                                 return k(v);
@@ -1057,7 +1190,7 @@ let program = function(k) {
                                                                     return k(
                                                                       function(
                                                                         k,
-                                                                        t_84
+                                                                        t_85
                                                                       ) {
                                                                         return change_50(
                                                                           k
@@ -1134,7 +1267,7 @@ let program = function(k) {
                                                                   function(v0) {
                                                                     return init_48(
                                                                       function(
-                                                                        t_109
+                                                                        t_110
                                                                       ) {
                                                                         return view_49(
                                                                           function(
@@ -1147,7 +1280,7 @@ let program = function(k) {
                                                                                   k
                                                                                 ) {
                                                                                   return k(
-                                                                                    t_109
+                                                                                    t_110
                                                                                   );
                                                                                 },
                                                                                 function(
@@ -1234,7 +1367,7 @@ let program = function(k) {
                                                                     return k(
                                                                       function(
                                                                         k,
-                                                                        t_82
+                                                                        t_83
                                                                       ) {
                                                                         return (function(
                                                                           k
@@ -1245,7 +1378,7 @@ let program = function(k) {
                                                                             return k(
                                                                               function(
                                                                                 k,
-                                                                                t_83
+                                                                                t_84
                                                                               ) {
                                                                                 return (function(
                                                                                   k
@@ -1275,7 +1408,7 @@ let program = function(k) {
                                                                                                   return k(
                                                                                                     function(
                                                                                                       k,
-                                                                                                      t_81
+                                                                                                      t_82
                                                                                                     ) {
                                                                                                       return (function(
                                                                                                         k
@@ -1435,7 +1568,7 @@ let program = function(k) {
                                                                                                 ) {
                                                                                                   return model_54(
                                                                                                     function(
-                                                                                                      t_110
+                                                                                                      t_111
                                                                                                     ) {
                                                                                                       return make_controller_56(
                                                                                                         function(
@@ -1448,7 +1581,7 @@ let program = function(k) {
                                                                                                                 k
                                                                                                               ) {
                                                                                                                 return k(
-                                                                                                                  t_110
+                                                                                                                  t_111
                                                                                                                 );
                                                                                                               },
                                                                                                               function(
@@ -1549,15 +1682,15 @@ let program = function(k) {
                                                                             ) {
                                                                               return k(
                                                                                 function() {
-                                                                                  let t_111 = Array.prototype.slice.call(
+                                                                                  let t_112 = Array.prototype.slice.call(
                                                                                     arguments
                                                                                   );
-                                                                                  t_111 = t_111.map(
+                                                                                  t_112 = t_112.map(
                                                                                     wrap
                                                                                   );
                                                                                   prepend(
                                                                                     returnk,
-                                                                                    t_111
+                                                                                    t_112
                                                                                   );
                                                                                   return trampoline(
                                                                                     apply(
@@ -1589,7 +1722,7 @@ let program = function(k) {
                                                                                                         return k(
                                                                                                           function(
                                                                                                             k,
-                                                                                                            t_80
+                                                                                                            t_81
                                                                                                           ) {
                                                                                                             return (function(
                                                                                                               k
@@ -1744,7 +1877,7 @@ let program = function(k) {
                                                                                       })(
                                                                                         returnk
                                                                                       ),
-                                                                                      t_111
+                                                                                      t_112
                                                                                     )
                                                                                   );
                                                                                 }
@@ -1792,7 +1925,7 @@ let program = function(k) {
                                                             })(function(v0) {
                                                               return voidf(
                                                                 function(
-                                                                  t_112
+                                                                  t_113
                                                                 ) {
                                                                   return voidf(
                                                                     function(
@@ -1805,7 +1938,7 @@ let program = function(k) {
                                                                             k
                                                                           ) {
                                                                             return k(
-                                                                              t_112
+                                                                              t_113
                                                                             );
                                                                           },
                                                                           function(
@@ -1863,17 +1996,14 @@ let program = function(k) {
                                           })(k);
                                         });
                                       })(function(v0) {
-                                        return voidf(function(t_113) {
-                                          return voidf(function(t_114) {
-                                            return voidf(function(t_115) {
-                                              return voidf(function(t_116) {
+                                        return voidf(function(t_114) {
+                                          return voidf(function(t_115) {
+                                            return voidf(function(t_116) {
+                                              return voidf(function(t_117) {
                                                 return voidf(function(v) {
                                                   return function() {
                                                     return v0(
                                                       k,
-                                                      function(k) {
-                                                        return k(t_113);
-                                                      },
                                                       function(k) {
                                                         return k(t_114);
                                                       },
@@ -1882,6 +2012,9 @@ let program = function(k) {
                                                       },
                                                       function(k) {
                                                         return k(t_116);
+                                                      },
+                                                      function(k) {
+                                                        return k(t_117);
                                                       },
                                                       function(k) {
                                                         return k(v);
@@ -1899,11 +2032,11 @@ let program = function(k) {
                                 })(function(v0) {
                                   return (function(k) {
                                     return k(function() {
-                                      let t_117 = Array.prototype.slice.call(
+                                      let t_118 = Array.prototype.slice.call(
                                         arguments
                                       );
-                                      let k = shift(t_117);
-                                      return k(apply2(patch, t_117));
+                                      let k = shift(t_118);
+                                      return k(apply2(patch, t_118));
                                     });
                                   })(function(v) {
                                     return function() {
@@ -1963,11 +2096,11 @@ let program = function(k) {
                                               return (function(k) {
                                                 return (function(k) {
                                                   return k(function() {
-                                                    let t_118 = Array.prototype.slice.call(
+                                                    let t_119 = Array.prototype.slice.call(
                                                       arguments
                                                     );
-                                                    let k = shift(t_118);
-                                                    return k(apply2(pk, t_118));
+                                                    let k = shift(t_119);
+                                                    return k(apply2(pk, t_119));
                                                   });
                                                 })(function(v) {
                                                   pk_18 = function(k) {
@@ -1996,11 +2129,11 @@ let program = function(k) {
                                         return (function(k) {
                                           return (function(k) {
                                             return k(function() {
-                                              let t_119 = Array.prototype.slice.call(
+                                              let t_120 = Array.prototype.slice.call(
                                                 arguments
                                               );
-                                              let k = shift(t_119);
-                                              return k(apply2(times, t_119));
+                                              let k = shift(t_120);
+                                              return k(apply2(times, t_120));
                                             });
                                           })(function(v) {
                                             times_17 = function(k) {
@@ -2029,11 +2162,11 @@ let program = function(k) {
                                   return (function(k) {
                                     return (function(k) {
                                       return k(function() {
-                                        let t_120 = Array.prototype.slice.call(
+                                        let t_121 = Array.prototype.slice.call(
                                           arguments
                                         );
-                                        let k = shift(t_120);
-                                        return k(apply2(add, t_120));
+                                        let k = shift(t_121);
+                                        return k(apply2(add, t_121));
                                       });
                                     })(function(v) {
                                       add_16 = function(k) {
@@ -2058,17 +2191,17 @@ let program = function(k) {
                             })(k);
                           });
                         })(function(v0) {
-                          return voidf(function(t_121) {
-                            return voidf(function(t_122) {
+                          return voidf(function(t_122) {
+                            return voidf(function(t_123) {
                               return voidf(function(v) {
                                 return function() {
                                   return v0(
                                     k,
                                     function(k) {
-                                      return k(t_121);
+                                      return k(t_122);
                                     },
                                     function(k) {
-                                      return k(t_122);
+                                      return k(t_123);
                                     },
                                     function(k) {
                                       return k(v);
@@ -2333,7 +2466,7 @@ let program = function(k) {
                                                                                                                               ) {
                                                                                                                                 return _cons__26(
                                                                                                                                   function(
-                                                                                                                                    t_124
+                                                                                                                                    t_125
                                                                                                                                   ) {
                                                                                                                                     return (function(
                                                                                                                                       k
@@ -2354,7 +2487,7 @@ let program = function(k) {
                                                                                                                                               k
                                                                                                                                             ) {
                                                                                                                                               return k(
-                                                                                                                                                t_124
+                                                                                                                                                t_125
                                                                                                                                               );
                                                                                                                                             },
                                                                                                                                             function(
@@ -2448,7 +2581,7 @@ let program = function(k) {
                                                                                                                       ) {
                                                                                                                         return _cons__26(
                                                                                                                           function(
-                                                                                                                            t_125
+                                                                                                                            t_126
                                                                                                                           ) {
                                                                                                                             return (function(
                                                                                                                               k
@@ -2469,7 +2602,7 @@ let program = function(k) {
                                                                                                                                       k
                                                                                                                                     ) {
                                                                                                                                       return k(
-                                                                                                                                        t_125
+                                                                                                                                        t_126
                                                                                                                                       );
                                                                                                                                     },
                                                                                                                                     function(
@@ -2563,7 +2696,7 @@ let program = function(k) {
                                                                                                               ) {
                                                                                                                 return _cons__26(
                                                                                                                   function(
-                                                                                                                    t_126
+                                                                                                                    t_127
                                                                                                                   ) {
                                                                                                                     return (function(
                                                                                                                       k
@@ -2584,7 +2717,7 @@ let program = function(k) {
                                                                                                                               k
                                                                                                                             ) {
                                                                                                                               return k(
-                                                                                                                                t_126
+                                                                                                                                t_127
                                                                                                                               );
                                                                                                                             },
                                                                                                                             function(
@@ -2678,7 +2811,7 @@ let program = function(k) {
                                                                                                       ) {
                                                                                                         return _cons__26(
                                                                                                           function(
-                                                                                                            t_127
+                                                                                                            t_128
                                                                                                           ) {
                                                                                                             return (function(
                                                                                                               k
@@ -2699,7 +2832,7 @@ let program = function(k) {
                                                                                                                       k
                                                                                                                     ) {
                                                                                                                       return k(
-                                                                                                                        t_127
+                                                                                                                        t_128
                                                                                                                       );
                                                                                                                     },
                                                                                                                     function(
@@ -2983,7 +3116,7 @@ let program = function(k) {
                                                                               );
                                                                             })(
                                                                               function(
-                                                                                t_128
+                                                                                t_129
                                                                               ) {
                                                                                 return (function(
                                                                                   k
@@ -2995,7 +3128,7 @@ let program = function(k) {
                                                                                   );
                                                                                 })(
                                                                                   function(
-                                                                                    t_129
+                                                                                    t_130
                                                                                   ) {
                                                                                     return (function(
                                                                                       k
@@ -3016,14 +3149,14 @@ let program = function(k) {
                                                                                               k
                                                                                             ) {
                                                                                               return k(
-                                                                                                t_128
+                                                                                                t_129
                                                                                               );
                                                                                             },
                                                                                             function(
                                                                                               k
                                                                                             ) {
                                                                                               return k(
-                                                                                                t_129
+                                                                                                t_130
                                                                                               );
                                                                                             },
                                                                                             function(
@@ -3087,16 +3220,16 @@ let program = function(k) {
                                                                 ) {
                                                                   return k(
                                                                     function() {
-                                                                      let t_130 = Array.prototype.slice.call(
+                                                                      let t_131 = Array.prototype.slice.call(
                                                                         arguments
                                                                       );
                                                                       let k = shift(
-                                                                        t_130
+                                                                        t_131
                                                                       );
                                                                       return k(
                                                                         apply2(
                                                                           ruse_record_modifier,
-                                                                          t_130
+                                                                          t_131
                                                                         )
                                                                       );
                                                                     }
@@ -3133,16 +3266,16 @@ let program = function(k) {
                                                           return (function(k) {
                                                             return k(
                                                               function() {
-                                                                let t_131 = Array.prototype.slice.call(
+                                                                let t_132 = Array.prototype.slice.call(
                                                                   arguments
                                                                 );
                                                                 let k = shift(
-                                                                  t_131
+                                                                  t_132
                                                                 );
                                                                 return k(
                                                                   apply2(
                                                                     ruse_record_accessor,
-                                                                    t_131
+                                                                    t_132
                                                                   )
                                                                 );
                                                               }
@@ -3172,14 +3305,14 @@ let program = function(k) {
                                                   return (function(k) {
                                                     return (function(k) {
                                                       return k(function() {
-                                                        let t_132 = Array.prototype.slice.call(
+                                                        let t_133 = Array.prototype.slice.call(
                                                           arguments
                                                         );
-                                                        let k = shift(t_132);
+                                                        let k = shift(t_133);
                                                         return k(
                                                           apply2(
                                                             ruse_record_predicate,
-                                                            t_132
+                                                            t_133
                                                           )
                                                         );
                                                       });
@@ -3205,14 +3338,14 @@ let program = function(k) {
                                             return (function(k) {
                                               return (function(k) {
                                                 return k(function() {
-                                                  let t_133 = Array.prototype.slice.call(
+                                                  let t_134 = Array.prototype.slice.call(
                                                     arguments
                                                   );
-                                                  let k = shift(t_133);
+                                                  let k = shift(t_134);
                                                   return k(
                                                     apply2(
                                                       ruse_record_constructor,
-                                                      t_133
+                                                      t_134
                                                     )
                                                   );
                                                 });
@@ -3238,14 +3371,14 @@ let program = function(k) {
                                       return (function(k) {
                                         return (function(k) {
                                           return k(function() {
-                                            let t_134 = Array.prototype.slice.call(
+                                            let t_135 = Array.prototype.slice.call(
                                               arguments
                                             );
-                                            let k = shift(t_134);
+                                            let k = shift(t_135);
                                             return k(
                                               apply2(
                                                 ruse_make_record_type,
-                                                t_134
+                                                t_135
                                               )
                                             );
                                           });
@@ -3272,11 +3405,11 @@ let program = function(k) {
                                   return (function(k) {
                                     return (function(k) {
                                       return k(function() {
-                                        let t_135 = Array.prototype.slice.call(
+                                        let t_136 = Array.prototype.slice.call(
                                           arguments
                                         );
-                                        let k = shift(t_135);
-                                        return k(apply2(nullp, t_135));
+                                        let k = shift(t_136);
+                                        return k(apply2(nullp, t_136));
                                       });
                                     })(function(v) {
                                       null__8 = function(k) {
@@ -3305,11 +3438,11 @@ let program = function(k) {
                             return (function(k) {
                               return (function(k) {
                                 return k(function() {
-                                  let t_136 = Array.prototype.slice.call(
+                                  let t_137 = Array.prototype.slice.call(
                                     arguments
                                   );
-                                  let k = shift(t_136);
-                                  return k(apply2(assume, t_136));
+                                  let k = shift(t_137);
+                                  return k(apply2(assume, t_137));
                                 });
                               })(function(v) {
                                 assume_7 = function(k) {
@@ -3334,27 +3467,24 @@ let program = function(k) {
                       })(k);
                     });
                   })(function(v0) {
-                    return voidf(function(t_137) {
-                      return voidf(function(t_138) {
-                        return voidf(function(t_139) {
-                          return voidf(function(t_140) {
-                            return voidf(function(t_141) {
-                              return voidf(function(t_142) {
-                                return voidf(function(t_143) {
-                                  return voidf(function(t_144) {
-                                    return voidf(function(t_145) {
-                                      return voidf(function(t_146) {
-                                        return voidf(function(t_147) {
-                                          return voidf(function(t_148) {
-                                            return voidf(function(t_149) {
-                                              return voidf(function(t_150) {
+                    return voidf(function(t_138) {
+                      return voidf(function(t_139) {
+                        return voidf(function(t_140) {
+                          return voidf(function(t_141) {
+                            return voidf(function(t_142) {
+                              return voidf(function(t_143) {
+                                return voidf(function(t_144) {
+                                  return voidf(function(t_145) {
+                                    return voidf(function(t_146) {
+                                      return voidf(function(t_147) {
+                                        return voidf(function(t_148) {
+                                          return voidf(function(t_149) {
+                                            return voidf(function(t_150) {
+                                              return voidf(function(t_151) {
                                                 return voidf(function(v) {
                                                   return function() {
                                                     return v0(
                                                       k,
-                                                      function(k) {
-                                                        return k(t_137);
-                                                      },
                                                       function(k) {
                                                         return k(t_138);
                                                       },
@@ -3395,6 +3525,9 @@ let program = function(k) {
                                                         return k(t_150);
                                                       },
                                                       function(k) {
+                                                        return k(t_151);
+                                                      },
+                                                      function(k) {
                                                         return k(v);
                                                       }
                                                     );
@@ -3426,24 +3559,21 @@ let program = function(k) {
             })(k);
           });
         })(function(v0) {
-          return voidf(function(t_151) {
-            return voidf(function(t_152) {
-              return voidf(function(t_153) {
-                return voidf(function(t_154) {
-                  return voidf(function(t_155) {
-                    return voidf(function(t_156) {
-                      return voidf(function(t_157) {
-                        return voidf(function(t_158) {
-                          return voidf(function(t_159) {
-                            return voidf(function(t_160) {
-                              return voidf(function(t_161) {
+          return voidf(function(t_152) {
+            return voidf(function(t_153) {
+              return voidf(function(t_154) {
+                return voidf(function(t_155) {
+                  return voidf(function(t_156) {
+                    return voidf(function(t_157) {
+                      return voidf(function(t_158) {
+                        return voidf(function(t_159) {
+                          return voidf(function(t_160) {
+                            return voidf(function(t_161) {
+                              return voidf(function(t_162) {
                                 return voidf(function(v) {
                                   return function() {
                                     return v0(
                                       k,
-                                      function(k) {
-                                        return k(t_151);
-                                      },
                                       function(k) {
                                         return k(t_152);
                                       },
@@ -3475,6 +3605,9 @@ let program = function(k) {
                                         return k(t_161);
                                       },
                                       function(k) {
+                                        return k(t_162);
+                                      },
+                                      function(k) {
                                         return k(v);
                                       }
                                     );
@@ -3497,18 +3630,18 @@ let program = function(k) {
   })(function(v0) {
     return (function(k) {
       return k(function() {
-        let t_162 = Array.prototype.slice.call(arguments);
-        let k = shift(t_162);
-        return k(apply2(ruse_cons_star, t_162));
+        let t_163 = Array.prototype.slice.call(arguments);
+        let k = shift(t_163);
+        return k(apply2(ruse_cons_star, t_163));
       });
-    })(function(t_165) {
+    })(function(t_166) {
       return (function(k) {
         return k(function() {
-          let t_163 = Array.prototype.slice.call(arguments);
-          let k = shift(t_163);
-          return k(apply2(ruse_cons, t_163));
+          let t_164 = Array.prototype.slice.call(arguments);
+          let k = shift(t_164);
+          return k(apply2(ruse_cons, t_164));
         });
-      })(function(t_166) {
+      })(function(t_167) {
         return (function(k) {
           return k(function(k) {
             args_6 = ruse_arguments_to_list(arguments);
@@ -3519,10 +3652,10 @@ let program = function(k) {
             return v0(
               k,
               function(k) {
-                return k(t_165);
+                return k(t_166);
               },
               function(k) {
-                return k(t_166);
+                return k(t_167);
               },
               function(k) {
                 return k(v);

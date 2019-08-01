@@ -1,10 +1,10 @@
 all:
 	cp main.scm ../../in.scm
-	cd ../../ && make javascript && cp out.pretty.js demo/counter/out.js
+	cd ../../ && make javascript && cp out.pretty.js demo/musicism/out.js
 
 serve:
 	cd ../../ && make serve
 
 update:
 	npm update
-	./node_module/.bin/webpack
+	./node_modules/.bin/webpack

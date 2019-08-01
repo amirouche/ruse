@@ -6,6 +6,11 @@ document.querySelector('#loading').style.display = "block";
 
 let ReactDOM = helpers.default.ReactDOM;
 let hyperscript = helpers.default.h;
+let ReactAudioPlayer = helpers.default.ReactAudioPlayer;
+
+let ReactComponents = {
+    ReactAudioPlayer: ReactAudioPlayer.default,
+}
 
 let container = document.getElementById('container');
 
@@ -29,7 +34,7 @@ function is_attributes(cons) {
 function scheme2object(scheme) {
     let out = {};
     while(scheme !== EMPTY_LIST) {
-        let key = scheme.fields[0].fields[0];
+        let key = scheme.fields[0].fields[0].value;
         let value = scheme.fields[0].fields[1].fields[0];
 
         if(key.startsWith('on')) {
@@ -58,6 +63,10 @@ let makeCallback = function(callback) {
 
 let sxml2hyperscript = function(scheme) {
     let tag = scheme.fields[0].value;
+
+    if (ReactComponents[tag] !== undefined) {
+        tag = ReactComponents[tag];
+    }
 
     let cdr = scheme.fields[1];
     let child = undefined;
