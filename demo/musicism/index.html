@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+    <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="static/normalize.css">
+	<link rel="stylesheet" href="main.css">
+	<title>ruse scheme - counter demo</title>
+    </head>
+    <body>
+	<div id="overlay">
+	</div>
+        <div id="xhr">
+            <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+        </div>
+	<div id="container">
+            <div id="noscript" class="stdin">
+                <noscript>
+                    JavaScript is required to run Scheme in the browser!
+                </noscript>
+            </div>
+            <div id="loading">
+                <p>;; Loading in progress...</p>
+                <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+            </div>
+        </div>
+        <script src="build/helpers.js"></script>
+        <script src="main.js" charset="utf-8"></script>
+        <script src="out.js" charset="utf-8"></script>
+    </body>
+</html>
