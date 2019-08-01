@@ -105,7 +105,10 @@ ruse_cons_record = {
   fields: { car: 0, cdr: 1 }
 };
 
-ruse_cons = ruse_record_constructor(ruse_cons_record);
+function ruse_cons(a, b) {
+  let instance = { type: ruse_cons, fields: [a, b] };
+  return instance;
+}
 
 function ruse_arguments_to_list(args) {
   args = Array.prototype.slice.call(args);
@@ -118,6 +121,17 @@ function ruse_arguments_to_list(args) {
   }
 
   return wrap(out);
+}
+
+function ruse_cons_star() {
+  let args = Array.prototype.slice.call(arguments);
+  args.reverse();
+  let out = args.shift();
+  for (k in args) {
+    out = ruse_cons(args[k], out);
+  }
+
+  return out;
 }
 
 /* define-record-type helpers */
@@ -177,55 +191,69 @@ function ruse_record_accessor(type, name) {
 
 let program = function(k) {
   return (function(k) {
-    return k(function(k, list_0) {
+    return k(function(k, ruse_cons__1, ruse_cons_0) {
       return (function(k) {
         return (function(k) {
-          return k(function(k, t_2) {
+          return k(function(k, list_2) {
             return (function(k) {
-              return list_0(function(v0) {
-                return (function(k) {
-                  return k(1);
-                })(function(t_3) {
+              return (function(k) {
+                return k(function(k, t_4) {
                   return (function(k) {
-                    return k(2);
-                  })(function(t_4) {
-                    return (function(k) {
-                      return k(3);
-                    })(function(v) {
-                      return function() {
-                        return v0(
-                          k,
-                          function(k) {
-                            return k(t_3);
-                          },
-                          function(k) {
-                            return k(t_4);
-                          },
-                          function(k) {
-                            return k(v);
-                          }
-                        );
-                      };
+                    return list_2(function(v0) {
+                      return (function(k) {
+                        return k(1);
+                      })(function(t_5) {
+                        return (function(k) {
+                          return k(2);
+                        })(function(t_6) {
+                          return (function(k) {
+                            return k(3);
+                          })(function(v) {
+                            return function() {
+                              return v0(
+                                k,
+                                function(k) {
+                                  return k(t_5);
+                                },
+                                function(k) {
+                                  return k(t_6);
+                                },
+                                function(k) {
+                                  return k(v);
+                                }
+                              );
+                            };
+                          });
+                        });
+                      });
                     });
+                  })(k);
+                });
+              })(function(v0) {
+                return (function(k) {
+                  return (function(k) {
+                    return k(function(k) {
+                      foobar_3 = ruse_arguments_to_list(arguments);
+                      return foobar_3(k);
+                    });
+                  })(function(v) {
+                    list_2 = function(k) {
+                      return k(v);
+                    };
+                    return k(voidf);
                   });
+                })(function(v) {
+                  return function() {
+                    return v0(k, function(k) {
+                      return k(v);
+                    });
+                  };
                 });
               });
             })(k);
           });
         })(function(v0) {
-          return (function(k) {
-            return (function(k) {
-              return k(function(k) {
-                foobar_1 = ruse_arguments_to_list(arguments);
-                return foobar_1(k);
-              });
-            })(function(v) {
-              list_0 = function(k) {
-                return k(v);
-              };
-              return k(voidf);
-            });
-          })(function(v) {
+          return voidf(function(v) {
             return function() {
               return v0(k, function(k) {
                 return k(v);
@@ -236,12 +264,32 @@ let program = function(k) {
       })(k);
     });
   })(function(v0) {
-    return voidf(function(v) {
-      return function() {
-        return v0(k, function(k) {
-          return k(v);
+    return (function(k) {
+      return k(function() {
+        let t_8 = Array.prototype.slice.call(arguments);
+        let k = shift(t_8);
+        return k(apply2(ruse_cons_star, t_8));
+      });
+    })(function(t_10) {
+      return (function(k) {
+        return k(function() {
+          let t_9 = Array.prototype.slice.call(arguments);
+          let k = shift(t_9);
+          return k(apply2(ruse_cons, t_9));
         });
-      };
+      })(function(v) {
+        return function() {
+          return v0(
+            k,
+            function(k) {
+              return k(t_10);
+            },
+            function(k) {
+              return k(v);
+            }
+          );
+        };
+      });
     });
   });
 };

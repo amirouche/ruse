@@ -94,19 +94,34 @@ ruse_cons_record = {
     fields: {car: 0, cdr: 1},
 }
 
-ruse_cons = ruse_record_constructor(ruse_cons_record);
+function ruse_cons(a, b) {
+    let instance = {type: ruse_cons_record, fields: [a, b]};
+    return instance;
+}
 
 function ruse_arguments_to_list(args) {
     args = Array.prototype.slice.call(args);
-    args.shift();
+    let k = shift(args)
     args.reverse();
     let out = EMPTY_LIST;
-    for(k in args) {
-        out = wrap(out);
-        out = ruse_cons(returnk, args[k], out);
+    for(i in args) {
+        let value = unwrap(args[i]);
+        out = ruse_cons(value, out);
+    }
+    return wrap(out);
+}
+
+function ruse_cons_star() {
+    let args = Array.prototype.slice.call(arguments);
+    args.shift();
+    args.reverse()
+    let out = args.shift();
+
+    for (k in args) {
+        out = ruse_cons(args[k])
     }
 
-    return wrap(out);
+    return out;
 }
 
 /* define-record-type helpers */

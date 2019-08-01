@@ -508,7 +508,21 @@
                              (cons 'quote (lambda (env d)
                                             (unless (datum? d)
                                               (error 'quote "invalid datum" d))
-                                            `(quote ,d)))
+                                            (cond
+                                             ((or (null? d)
+                                                  (string? d)
+                                                  (number? d)
+                                                  (symbol? d))
+                                              `(quote ,d))
+                                             ((pair? d)
+                                              (Expr (let f ((d d))
+                                                      (if (null? d)
+                                                          '()
+                                                          (list 'ruse-cons
+                                                                (list 'quote (car d))
+                                                                (f (cdr d))))) env))
+                                             (else (error 'rusec "oops" d)))))
+
                              (cons 'if (case-lambda
                                          [(env e0 e1) `(if ,(Expr e0 env) ,(Expr e1 env))]
                                          [(env e0 e1 e2)
@@ -622,6 +636,10 @@
               (apply (cdr (assq 'values env)) env (cdr e))]
              [(eq? (caddar e) 'void)
               (App '(void) env)]
+             [(eq? (caddar e) 'list*)
+              (App (cons 'ruse-cons* (cdr e)) env)]
+             [(eq? (caddar e) 'cons)
+              (App (cons 'ruse-cons (cdr e)) env)]
              [else (error 'ruse "chez primitive oops" e)])]
            [else (App e env)])]
          [(symbol? e)
@@ -861,10 +879,7 @@
 (define-pass
   cps-trampoline : L6 (e) -> L6 ()
   (Expr : Expr (e) -> Expr ()
-
         [(quote ,d)
-         (unless (constant? d)
-           (error 'ruse "cps-trampoline doesn't support complex datum, yet!" d))
          (cond
           ((or (number? d) (string? d))
            `(lambda (k) (k ,d)))
@@ -873,7 +888,7 @@
               (k (ruse-symbol-get-or-create ,(symbol->string d)))))
           ((null? d)
            '())
-          (else (error 'ruse "oops")))]
+          (else (error 'rusec "oops" e)))]
 
         [(set! ,x ,[e])
          `(lambda (k)
@@ -1297,8 +1312,10 @@
                  (toplevel '()))
         (cond
          ((null? body)
-          `(let ,(map (lambda (x) `(,x (void))) toplevel)
-             ,@(reverse out)))
+          `(let ((ruse-cons* (javascript-procedure ruse_cons_star))
+                 (ruse-cons (javascript-procedure ruse_cons)))
+             (let ,(map (lambda (x) `(,x (void))) toplevel)
+               ,@(reverse out))))
          ((not (pair? (car body)))
           (loop '() (append (reverse body) out) toplevel))
          ((eq? (caar body) 'letrec*)
@@ -1366,6 +1383,8 @@
 ;; (pk 'cool1 cool1)
 
 (define compiled (my-tiny-compile cool1))
+
+;; (pk 'compiled compiled)
 
 (cond
  ((string=? target "javascript")

@@ -1,8 +1,17 @@
 (define-library (ruse quasiquote)
 
-  (export quasiquote unquote unquote-splicing)
+  (export quasiquote unquote unquote-splicing list* list)
 
   (begin
+
+    ;; definition of cons and list to avoir circular loop and
+    ;; out-of-phase oops
+
+    (define cons (javascript-procedure ruse_cons))
+
+    (define list* (javascript-procedure ruse_cons_star))
+
+    (define list (lambda args args))
 
     ;; taken from chez source ./s/syntax.ss
 
@@ -29,7 +38,7 @@
                     (quasicons
                      (quasicons #'("quote" unquote-splicing) (quasi #'(p ...) (- lev 1)))
                      (quasi #'q lev)))]
-               [_ (quasicons (quasi #'p lev) (quasi #'q lev))])]
+               [_ (quasicons #'p lev) (quasi #'q lev))])]
             [#(x ...) (quasivector (vquasi #'(x ...) lev))]
             [#&x (quasibox (quasi #'x lev))]
             [p #'("quote" p)]))
