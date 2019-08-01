@@ -95,6 +95,7 @@ ruse_cons_record = {
 }
 
 function ruse_cons(a, b) {
+    console.assert(b !== undefined);
     let instance = {type: ruse_cons_record, fields: [a, b]};
     return instance;
 }
@@ -113,12 +114,12 @@ function ruse_arguments_to_list(args) {
 
 function ruse_cons_star() {
     let args = Array.prototype.slice.call(arguments);
-    args.shift();
+    // args.shift();
     args.reverse()
     let out = args.shift();
 
     for (k in args) {
-        out = ruse_cons(args[k])
+        out = ruse_cons(args[k], out)
     }
 
     return out;

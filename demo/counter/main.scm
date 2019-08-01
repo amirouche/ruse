@@ -42,12 +42,12 @@
   (define (init) 0)
 
   (define (view model mc)
-    (list 'div
-          (list '@ (cons "id" "box"))
-          "(= count "
-          model
-          ") "
-          (list 'button (list '@ (cons "onClick" (mc onClick)))
-                "increment")))
+    `(div
+      (@ ("id" "box"))
+      "(= count "
+      ,model
+      ") "
+      (button (@ ("onClick" ,(mc onClick)))
+              "increment")))
 
   (create-app init view))

@@ -640,6 +640,8 @@
               (App (cons 'ruse-cons* (cdr e)) env)]
              [(eq? (caddar e) 'cons)
               (App (cons 'ruse-cons (cdr e)) env)]
+             [(eq? (caddar e) 'list)
+              (App (cons 'ruse-list (cdr e)) env)]
              [else (error 'ruse "chez primitive oops" e)])]
            [else (App e env)])]
          [(symbol? e)
@@ -1313,7 +1315,8 @@
         (cond
          ((null? body)
           `(let ((ruse-cons* (javascript-procedure ruse_cons_star))
-                 (ruse-cons (javascript-procedure ruse_cons)))
+                 (ruse-cons (javascript-procedure ruse_cons))
+                 (ruse-list (lambda args args)))
              (let ,(map (lambda (x) `(,x (void))) toplevel)
                ,@(reverse out))))
          ((not (pair? (car body)))

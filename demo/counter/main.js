@@ -30,7 +30,7 @@ function scheme2object(scheme) {
     let out = {};
     while(scheme !== EMPTY_LIST) {
         let key = scheme.fields[0].fields[0];
-        let value = scheme.fields[0].fields[1];
+        let value = scheme.fields[0].fields[1].fields[0];
 
         if(key.startsWith('on')) {
             out[key] = makeCallback(value);
