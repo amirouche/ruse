@@ -1,1 +1,1 @@
-output { type: 'symbol', value: 'hello-world' }
+output {"type":"symbol","value":"hello-world"}

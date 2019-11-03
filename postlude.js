@@ -1,7 +1,7 @@
 ;
 
 function output(x) {
-    pk('output', x);
+    pk('output', JSON.stringify(x));
     return function() {};
 }
 

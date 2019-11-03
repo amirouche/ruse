@@ -1,1 +1,1 @@
-output hello world
+output "hello world"

@@ -1,4 +1,1 @@
-output { type: { type: 'record', subtype: '<cons>', fields: { car: 0, cdr: 1 } },
-  fields: 
-   [ { type: 'symbol', value: 'a' },
-     { type: [Object], fields: [Array] } ] }
+output {"type":{"type":"record","subtype":"<cons>","fields":{"car":0,"cdr":1}},"fields":[{"type":"symbol","value":"a"},{"type":{"type":"record","subtype":"<cons>","fields":{"car":0,"cdr":1}},"fields":[42,{"type":{"type":"record","subtype":"<cons>","fields":{"car":0,"cdr":1}},"fields":[{"type":"symbol","value":"c"},{"type":"empty list"}]}]}]}
