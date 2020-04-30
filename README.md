@@ -1,10 +1,8 @@
 # ruse scheme
 
-[![builds.sr.ht status](https://builds.sr.ht/~amz3/ruse-scheme.svg)](https://builds.sr.ht/~amz3/ruse-scheme?)
-
 Experimental Scheme to JavaScript compiler
 
-![a fox](https://raw.githubusercontent.com/scheme-live/ruse-scheme/master/nathan-anderson-3Lazy6QQR6c-unsplash-small.jpg)
+![a fox](https://raw.githubusercontent.com/amirouche/ruse/master/nathan-anderson-3Lazy6QQR6c-unsplash-small.jpg)
 
 ## Abstract
 
@@ -30,10 +28,6 @@ that is (was?) actually working.
 
 `ruse` is not only a learning project about Scheme programming
 language but also an exercices about compilers.
-
-## Documentation
-
-See [TODO](https://github.com/scheme-live/ruse-scheme/issues/1).
 
 ## More like this
 
