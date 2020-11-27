@@ -1,0 +1,5 @@
+(let ((add (lambda (a b) (%%inline-host-expression "~s + ~s" a b))))
+  (let ((a 22)
+        (b (let ((a 10))
+             (add a a))))
+    (add a b)))

@@ -1,0 +1,7 @@
+(define abc (lambda (a b)
+              (begin
+                (define increment 2)
+                (define out (%%inline-host-expression "~s + ~s + ~s" a b increment))
+                out)))
+
+(abc 20 20)

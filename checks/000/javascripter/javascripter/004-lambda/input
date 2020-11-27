@@ -1,0 +1,3 @@
+(define abc (lambda () 42))
+
+(abc)

@@ -1,0 +1,3 @@
+(define abc (lambda (a b) (%%inline-host-expression "~s + ~s" a b)))
+
+(abc 40 2)

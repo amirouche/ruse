@@ -1,0 +1,17 @@
+(define add (lambda (a b)
+              (%%inline-host-expression "~s + ~s" a b)))
+
+(define minus (lambda (a b)
+              (%%inline-host-expression "~s - ~s" a b)))
+
+(define fibonnaci
+  (lambda (a)
+    (if (%%inline-host-expression "~s === 0" a)
+        0
+        (if  (%%inline-host-expression "~s === 1" a)
+             1
+             (add (fibonnaci (minus a 1))
+                  (fibonnaci (minus a 2)))))))
+
+
+(fibonnaci 10)
