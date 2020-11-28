@@ -2,7 +2,13 @@
 (import (matchable))
 
 
+(define mydebug (make-parameter #f))
+
 ;; handy helper tool util...
+
+(define (-> a b)
+  (lambda (e)
+    (a (b (e)))))
 
 (define (list->generator lst)
   (lambda ()
@@ -30,6 +36,11 @@
 (define (pk . args)
   (display ";; ") (write args (current-error-port)) (newline)
   (car (reverse args)))
+
+(define (ppk . args)
+  (display ";; ") (pretty-print args (current-error-port)) (newline)
+  (car (reverse args)))
+
 
 (define (read-string port)
   (let loop ((out '()))
@@ -135,7 +146,11 @@
 
 
 (define (step-compile step sexp)
-  ((step-compiler step) sexp))
+  (guard (exc (else (display (string-append "Exception in: "
+                                            (step-name step)
+                                            "\n"))
+                    (raise exc)))
+         ((step-compiler step) sexp)))
 
 (define (step-eval step obj)
   ((step-evaler step) obj))
@@ -208,22 +223,106 @@
 
 (define step-renamer (make-step! "renamer" step-parser read (maybe-begin renamer*) #f))
 
+;; explicit begin
+
+(define (explicit-begin expr)
+  (match expr
+    (('let ((a b) ...) e* ...)
+     `(let ,(zip a (map explicit-begin b)) (begin ,@e*)))
+    ((e* ...) (map explicit-begin e*))
+    (e e)))
+
+(define step-explicit-begin (make-step! "explicit-begin"
+                                        step-renamer
+                                        read
+                                        (maybe-begin explicit-begin)
+                                        #f))
+
+;; begin-as-let
+
+(define (begin-as-let expr)
+  (match expr
+    (('begin e* ... e)
+     (let rec ((e* (map begin-as-let e*)))
+       (if (null? e*)
+           (begin-as-let e)
+           `(let ((,(g) ,(car e*)))
+              ,(rec (cdr e*))))))
+    ((e* ...) (map begin-as-let e*))
+    (e e)))
+
+(define step-begin-as-let (make-step! "begin-as-let"
+                                      step-explicit-begin
+                                      read
+                                      begin-as-let
+                                      #f))
+
+;; nested-let
+
+
+(define (nested-let expr)
+  (match expr
+    (('let ((a b)) e* ...)
+     `(let ((,a ,(nested-let b))) ,@(map nested-let e*)))
+    (('let ((a* b*) ... (a b)) e* ...)
+     (let rec ((a* a*)
+               (b* b*))
+       (if (null? a*)
+           `(let ((,a ,(nested-let b))) ,@(map nested-let e*))
+           `(let ((,(car a*) ,(nested-let (car b*)))) ,(rec (cdr a*) (cdr b*))))))
+    ((e* ...) (map nested-let e*))
+    (e e)))
+
+(define step-nested-let (make-step! "nested-let"
+                                    step-begin-as-let
+                                    read
+                                    nested-let
+                                    #f))
+
+
 ;; let-as-lambda
 
-(define (let-as-lambda e)
-  (match e
+(define (let-as-lambda expr)
+  (match expr
     (('let ((a b) ...) e* ...)
-     `((lambda ,a ,@e*) ,@b))
-    ((e* ...) (map (lambda (e) (let-as-lambda e)) e*))
+     `((lambda ,a ,@(map let-as-lambda e*)) ,@(map let-as-lambda b)))
+    ((e* ...) (map let-as-lambda e*))
     (e e)))
 
 (define step-let-as-lambda (make-step! "let-as-lambda"
-                                       step-renamer
+                                       step-nested-let
                                        read
                                        (maybe-begin let-as-lambda) #f))
 
+;; cps with trampoline
 
-;; let as define
+(define (cps expr)
+  (match expr
+    (('lambda args e)
+     `(lambda (,@(cons 'k args)) (,(cps e) k)))
+    (('%%inline-host-expression string a b)
+     (let ((a~ (g))
+           (b~ (g)))
+       `(lambda (k)
+          (,a (lambda (a)
+                (,b (lambda (b)
+                      (k (%%inline-host-expression ,string a b)))))))))
+    ((e)
+     `(lambda (k) (,(cps e) k)))
+    ((e a)
+     `(lambda (k) (,(cps e) k ,(cps a))))
+    ((e a b)
+     `(lambda (k)
+        (,(cps e) k ,(cps a) ,(cps b))))
+    ((? number? n) `(lambda (k) (k ,n)))
+    ((? symbol? s) s)))
+
+(define (cps* exp)
+  `(,(cps exp) (lambda (v) v)))
+
+(define step-cps (make-step! "cps" step-let-as-lambda read cps* #f))
+
+;; definer
 
 (define (definer expr)
   (match expr
@@ -233,7 +332,7 @@
     ((e ...) (map definer e))
     (e e)))
 
-(define step-definer (make-step! "definer" step-let-as-lambda read (maybe-begin definer) #f))
+(define step-definer (make-step! "definer" step-cps read (maybe-begin definer) #f))
 
 ;; step-javascripter
 ;;
@@ -258,21 +357,21 @@
                                           (javascripter value)))
 
     (('lambda (args ...) ('begin exprs ... last))
-     (string-append "function("
+     (string-append "(function("
                     (string-join (map javascripter args) ", ")
                     ") {\n"
                     (string-join (map javascripter exprs) ";\n")
                     ";\n"
                     "return "
                     (javascripter last)
-                    ";\n}"))
+                    ";\n})"))
 
     (('lambda (args ...) expr)
-     (string-append "function("
+     (string-append "(function("
                     (string-join (map javascripter args) ", ")
                     ") { return "
                     (javascripter expr)
-                    "; }"))
+                    "; })"))
 
     (('%%inline-host-expression string args ...)
      (apply format string args))
@@ -300,7 +399,7 @@
       (close-port stdin)
       (read-string stdout))))
 
-(define step-javascripter (make-step! "javascripter" step-definer read javascripter nodejs))
+(define step-javascripter (make-step! "javascripter" step-cps read javascripter nodejs))
 
 ;; executor
 
@@ -319,7 +418,10 @@
              (sexp (step-read start* filepath)))
     (if (null? pipe)
         (values sexp (step-eval end* sexp))
-        (loop (cdr pipe) (pk (step-name (car pipe)) ': (step-compile (car pipe) sexp))))))
+        (begin
+          (when (mydebug)
+            (ppk (step-name (car pipe)) sexp))
+          (loop (cdr pipe) (step-compile (car pipe) sexp))))))
 
 (define (check-prepare name)
   (match (string-split name #\/)
@@ -343,6 +445,9 @@
                   (newline) (display expected) (newline)
                   (display "*** Program:\n")
                   (display program)(newline)
+                  (call-with-output-file "program.js"
+                    (lambda (port)
+                      (display program port)))
                   (display "*** Got:\n")
                   (newline) (display result) (newline)
                   (display (string-append "** Retry with: scheme --program ruse.scm "
@@ -367,4 +472,4 @@
 
 (match (cdr (command-line))
   (() (check-all))
-  ((pathcheck) (check-check pathcheck)))
+  ((pathcheck) (mydebug #t) (check-check pathcheck)))
