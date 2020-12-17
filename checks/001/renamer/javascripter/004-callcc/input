@@ -1,0 +1,1 @@
+(call/cc (lambda (p) (p 42) 101))

@@ -4,7 +4,7 @@
 
 (define mydebug (make-parameter #f))
 
-;; handy helper tool util...
+;; handy helper tool utils...
 
 (define (-> a b)
   (lambda (e)
@@ -229,6 +229,8 @@
   (match expr
     (('let ((a b) ...) e* ...)
      `(let ,(zip a (map explicit-begin b)) (begin ,@e*)))
+    (('lambda args e* ...)
+     `(lambda ,args (begin ,@(map explicit-begin e*))))
     ((e* ...) (map explicit-begin e*))
     (e e)))
 
@@ -298,25 +300,42 @@
 
 (define (cps expr)
   (match expr
+    (('call/cc p)
+     (error 'cps "no cps yet"))
+
     (('lambda args e)
-     `(lambda (,@(cons 'k args)) (,(cps e) k)))
+     `(k (lambda ,(cons 'k args) (,(cps e) k))))
+
     (('%%inline-host-expression string a b)
      `(lambda (k)
-        (,a (lambda (a)
-              (,b (lambda (b)
-                    (k (%%inline-host-expression ,string a b))))))))
-  ((e)
-     `(lambda (k) (,(cps e) k)))
+        (,(cps a)
+         (lambda (x)
+           (,(cps b)
+            (lambda (y)
+              (k (%%inline-host-expression ,string x y))))))))
+
+    ((e)
+     `(lambda (zzz) (,(cps e) (lambda (p) (p zzz)))))
+
     ((e a)
      `(lambda (k) (,(cps e) k ,(cps a))))
+
     ((e a b)
      `(lambda (k)
-        (,(cps e) k ,(cps a) ,(cps b))))
+        (,(cps e)
+         (lambda (p)
+           (,(cps a)
+            (lambda (x)
+              (,(cps b)
+               (lambda (y)
+                 (p k x y)))))))))
+
     ((? number? n) `(lambda (k) (k ,n)))
+
     ((? symbol? s) s)))
 
 (define (cps* exp)
-  `(,(cps exp) (lambda (v) v)))
+  `(,(cps exp) (lambda (v) (%%inline-host-expression "console.log(\"out:\", ~s)" v))))
 
 (define step-cps (make-step! "cps" step-let-as-lambda read cps* #f))
 
@@ -397,7 +416,7 @@
       (close-port stdin)
       (read-string stdout))))
 
-(define step-javascripter (make-step! "javascripter" step-cps read javascripter nodejs))
+(define step-javascripter (make-step! "javascripter" step-let-as-lambda read javascripter nodejs))
 
 ;; executor
 
@@ -443,10 +462,7 @@
                   (newline) (display expected) (newline)
                   (display "*** Program:\n")
                   (display program)(newline)
-                  (call-with-output-file "program.js"
-                    (lambda (port)
-                      (display program port)))
-                  (display "*** Got:\n")
+                  (display "*** Actual:\n")
                   (newline) (display result) (newline)
                   (display (string-append "** Retry with: scheme --program ruse.scm "
                                           name
